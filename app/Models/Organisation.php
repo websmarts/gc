@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Address;
+use App\Models\Contact;
+use App\Models\Membership;
+use App\Models\MembershipType;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Organisation extends Model
+{
+    use HasFactory, SoftDeletes;
+    
+    protected $fillable = [
+        
+           'name',
+           'abn',
+           'gst_registered',
+           'address_id'
+    ];
+
+    protected $dates = ['deleted_at'];
+
+    /**
+     * Lets route model binding to use uuid
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Relationships
+     */
+    public function managers()
+    {
+        return $this->belongsToMany('App\Models\User', 'organisation_managers');
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function contacts()
+    {
+       return $this->hasMany(Contact::class);
+    }
+
+    public function membershipTypes()
+    {
+        return $this->hasMany(MembershipType::class);
+    }
+
+    public function memberships()
+    {
+        return $this->hasManyThrough(Membership::class,MembershipType::class);
+    }
+
+   public function members($primary_contacts_only = false)
+   {
+       $query =  DB::table('contacts')
+       ->select(
+            'contacts.id', 'contacts.name', 'contacts.phone', 'contacts.email',
+            'addresses.address1', 'addresses.address2', 'addresses.city', 'addresses.postcode',
+            'states.name as state',
+            'contacts_memberships.is_primary_contact as is_primary_contact',
+            'memberships.name as membership_name',
+            'membership_types.id as membership_type_id','membership_types.name as membership_type_name')
+       ->join('addresses','contacts.address_id','=', 'addresses.id')
+       ->join('states','addresses.state_id','=','states.id')
+       ->join('contacts_memberships','contacts_memberships.contact_id','=','contacts.id')
+       ->join('memberships','contacts_memberships.membership_id','=' ,'memberships.id')
+       ->join('membership_types','memberships.membership_type_id','=','membership_types.id')
+       ->where('contacts.organisation_id',$this->id);
+
+       if($primary_contacts_only){
+           $query->where('is_primary_contact',1);
+       }
+
+       return $query->get();
+   }
+
+    public function contactRoles()
+    {
+        
+    }
+    
+            
+}

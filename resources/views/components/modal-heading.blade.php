@@ -1,0 +1,1 @@
+<div class="text-2xl font-medium p-4 bg-gray-200 rounded-b-none rounded-md">{{ $slot }}</div>
