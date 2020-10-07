@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:border-l-2 lg:border-r-2 s border-gray-200 border-t-0 border-b-0 " >
+<div class="grid grid-cols-1 md:grid-cols-2   border-gray-200 border-t-0 border-b-0 " >
         <div class="p-6" >
             <div class="flex items-center">
             <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg><div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="#">Key benefits</a></div>
