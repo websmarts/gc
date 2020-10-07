@@ -31,6 +31,8 @@
 
          <!-- Scripts -->
          @livewireScripts
+
+        
          
     </body>
 </html>

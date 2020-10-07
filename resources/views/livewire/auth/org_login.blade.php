@@ -1,19 +1,20 @@
 
 
 <div class="w-full max-w-xs mx-auto">
-    <div>Login form </div>
-  <form wire:submit.prevent='login' class=" px-8 pt-6 pb-8 mb-4">
+<x-modal-heading>GroupCare Login</x-modal-heading>
+  <form name="{{$formname}}" wire:submit.prevent='login' class="bg-gray-100 shadow-md rounded rounded-t-none px-8 pt-6 pb-8 mb-4">
     <div class="mb-4">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
         Email
       </label>
       <input wire:model="email" 
-        id="email" 
-        name="email" 
-        type="text" 
-        placeholder="email"
-        class="form-input"
-        autofocus >
+      
+      id="email" 
+      name="email" 
+      type="text" 
+      placeholder="email"
+      class="form-input" 
+      >
       
     </div>
     <div class="mb-6">
@@ -44,16 +45,17 @@
            
    
     <div class="flex items-center justify-between">
-      <button type="submit" class="btn btn-blue" type="button">
+      <button type="submit" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
         Login
       </button>
 
-      
+      <button type="cancel" @click="showModal = false; " class="bg-gray-200 hover:bg-gray-100 text-gray-600 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+        Cancel
+      </button>
     </div>
 
       
       
-  
+    </div>
   </form>
 </div>
-

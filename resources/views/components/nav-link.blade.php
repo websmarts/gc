@@ -2,19 +2,17 @@
     'to' => '#'
     ])
 
-<a class="
-        {{ $to == request()->url() ? ' bg-gray-200 text-gray-900 ' : ' text-gray-100 ' }} 
-        flex 
-        items-center 
-        py-4 px-6 
-        block 
-        border-b-2
-        border-gray-300
+    <a  href="{{ $to }}" class="
+    {{ $to == request()->url() ? ' bg-indigo-800 text-white' : ' text-indigo-300  hover:text-white hover:bg-indigo-700' }} 
+    group flex items-center px-2 py-2 
+    text-sm leading-5 
+    font-medium  rounded-md 
+    focus:outline-none focus:bg-indigo-700 
+    transition ease-in-out duration-150">
+                    
+    {{ $slot }}
+    </a>
 
-        hover:bg-teal-200 
-        hover:bg-opacity-25
-        hover:text-gray-100" 
-        href="{{ $to }}"> 
-            
-    <span class="mx-4">{{ $slot }}</span>
-</a>
+    
+
+

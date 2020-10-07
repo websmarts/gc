@@ -17,13 +17,26 @@ class Login extends Component
 
     public $remember = false;
 
-    public $loginfailed = false;
+    public $show = true;
 
-    public $domain = 'contact';
+    public $loginfailed = '';
+
+    public $formname; // needs to be loginform 
+
+    
+
+   
 
     public function updating()
     {
-        $this->loginfailed = false;
+        $this->loginfailed = '';
+    }
+
+    public function closeform()
+    {
+        $this->loginfailed ='';
+        $this->email = '';
+        $this->password = '';
     }
     
     public function render()
@@ -38,17 +51,13 @@ class Login extends Component
 
         $remember = (int) $this->remember > 0 ? true : false;
 
-        if ($this->domain != 'contact' && Auth::attempt($credentials, $remember)) {
-            // Authentication passed...
+        if (Auth::attempt($credentials, $remember)) {
             return redirect()->intended('dashboard');
         }
 
-        if ($this->domain == 'contact' && Auth::guard('contact')->attempt($credentials, $remember)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
-        }
+       
 
-        $this->loginfailed = true;
+        $this->loginfailed = 'Login failed ...';
         
     }
 }
