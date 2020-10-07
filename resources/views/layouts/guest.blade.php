@@ -5,6 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#362f78">
+  <meta name="msapplication-TileColor" content="#362778">
+  <meta name="theme-color" content="#ffffff">
 
   <title>{{ config('app.name', 'Groupcare') }}</title>
 
@@ -45,7 +52,8 @@
 
               <!-- mobile sidebar brand -->
                 <div class="flex-shrink-0 flex items-center px-4">
-                  <img class="h-8 w-auto" src="/images/brand_logo.svg" alt="GroupCare">
+                  <img class="h-8 w-auto" src="/images/brand_logo.svg" alt="GroupCare"> 
+                  <span style="font-family:arial" class="text-white px-2 text-3xl">GroupCare</span>
                 </div>
 
                 <!-- mobile sidebar nav -->
@@ -89,7 +97,7 @@
               <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
 
                 <div class="flex items-center flex-shrink-0 px-4">
-                  <img class="h-10 w-auto" src="/images/brand_logo.svg" alt="GroupCare"> <span style="font-family:arial" class="text-white px-2 text-3xl">Groupcare</span>
+                  <img class="h-10 w-auto" src="/images/brand_logo.svg" alt="GroupCare"> <span style="font-family:arial" class="text-white px-2 text-3xl">GroupCare</span>
                 </div>
 
                 <nav class="mt-5 flex-1 px-2 bg-indigo-900 space-y-1">
