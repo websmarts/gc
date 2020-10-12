@@ -27,7 +27,7 @@ class OrganisationFactory extends Factory
         return [
             'uuid'=> Str::uuid(),
             'name'=> $this->faker->company,
-            'address_id' => Address::inRandomOrder()->select('id')->first()->id,
+            'address_id' => Address::factory()->create()->first()->id,
             'gst_registered' => $this->faker->numberBetween(0,1),
             'abn' => (string) $this->faker->randomNumber(9),
             'phone' => $this->faker->phoneNumber,

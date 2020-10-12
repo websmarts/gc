@@ -47,6 +47,11 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
+        // WARNING - views disk added to support my view analyser
+        'views' => [
+            'driver' => 'local',
+            'root' => resource_path('views'),
+        ],
 
         'public' => [
             'driver' => 'local',

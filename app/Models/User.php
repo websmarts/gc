@@ -3,12 +3,13 @@
 namespace App\Models;
 
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Lab404\Impersonate\Models\Impersonate;
 use App\Traits\UserHasRolesTrait as HasRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 
@@ -18,7 +19,6 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
     use Impersonate;
-
     use HasRoles;
 
     /**
@@ -27,7 +27,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        
+        'is_admin',
+        'uuid',
         'name',
         'email',
         'email_verified_at',
@@ -42,6 +43,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'is_admin',
         'password',
         'remember_token',
         'two_factor_recovery_codes',
@@ -57,7 +59,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * is_admin Mutator - stops attribute being updated unless its null
+     */
+    public function setIsAdminAttribute($value)
+    {
+       if( is_null($this->is_admin) ){
+        $this->attributes['is_admin'] = $value;
+       }   
+    }   
 
+       
+    
+    /**
+     * UUID Mutator - stops uuid being updated unless its null
+     */
+    public function setUuidAttribute($value)
+    {
+        if( !(isSet($this->attributes['uuid']) &&  $this->attributes['uuid']) ){
+            $this->attributes['uuid'] = $value;
+        }     
+    }
 
     /**
      * Lets route model binding to use uuid
@@ -66,14 +88,6 @@ class User extends Authenticatable
     {
         return 'uuid';
     }
-
-
-    // public function isAdministrator()
-    // {
-    //     return $this->is_admin == 1;
-    // }
-
-
 
 
     /**

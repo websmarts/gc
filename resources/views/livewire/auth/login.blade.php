@@ -1,6 +1,6 @@
 
 
-<div class="w-full max-w-xs mx-auto">
+<div class="max-w-sm mx-auto bg-white px-8 py-12">
     <div>Login form </div>
   <form wire:submit.prevent='login' class=" px-8 pt-6 pb-8 mb-4">
     <div class="mb-4">

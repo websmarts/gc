@@ -16,11 +16,9 @@
   <title>{{ config('app.name', 'Groupcare') }}</title>
 
 
-
   <!-- Styles -->
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
-
+  @livewireStyles
 
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 </head>
@@ -65,21 +63,7 @@
 
               <!-- mobile sidebar user menu -->
               <div class="flex-shrink-0 flex border-t border-indigo-700 p-4">
-                <a href="#" class="flex-shrink-0 group block focus:outline-none">
-                  <div class="flex items-center">
-                    <div class="ml-3">
-                      <p class="text-base leading-6 font-medium text-white">
-                        Tom Cook
-                      </p>
-                      <p class="mt-2 text-xs leading-4 font-medium text-indigo-300 hover:text-indigo-100 transition ease-in-out duration-150">
-                        View profile
-                      </p>
-                      <p class="mt-2 text-xs leading-4 font-medium text-indigo-300 hover:text-indigo-100 transition ease-in-out duration-150">
-                        Logout
-                      </p>
-                    </div>
-                  </div>
-                </a>
+              <x-nav-link to="{{ route('login') }}">Login</x-nav-link>
               </div>
 
             </div>
@@ -106,21 +90,7 @@
 
               </div>
               <div class="flex-shrink-0 flex border-t border-indigo-700 p-4">
-                <a href="#" class="flex-shrink-0 w-full group block">
-                  <div class="flex items-center">
-                    <div class="ml-3">
-                      <p class="text-sm leading-5 font-medium text-white">
-                        Tom Cook
-                      </p>
-                      <p class="mt-2 text-xs leading-4 font-medium text-indigo-300 hover:text-indigo-100 transition ease-in-out duration-150">
-                        View profile
-                      </p>
-                      <p class="mt-2 text-xs leading-4 font-medium text-indigo-300 hover:text-indigo-100 transition ease-in-out duration-150">
-                        Logout
-                      </p>
-                    </div>
-                  </div>
-                </a>
+                   <x-nav-link to="{{ route('login') }}">Login</x-nav-link>
               </div>
             </div>
           </div>
@@ -150,19 +120,22 @@
 
 
           </div>
-          <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" x-data="" x-init="$el.focus()">
+
+
+          
+          <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" >
             <div class="pt-2 pb-6 md:py-6">
               <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 @hasSection('pagetitle')
-                <h1 class="text-2xl font-semibold text-gray-400">
+                <div class="text-2xl font-semibold text-gray-500 mb-4">
                   @yield('pagetitle')
-                </h1>
+                </div>
                 @endif
               </div>
-              <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                <!-- Replace with your content -->
+              <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-24 ">
+                <!-- page content -->
                 @yield('content')
-                <!-- /End replace -->
+                <!-- content -->
               </div>
             </div>
           </main>
@@ -172,6 +145,8 @@
     </div>
  
   <div style="clear: both; display: block; height: 0px;"></div>
+
+  @livewireScripts
 </body>
 
 </html>

@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpersonatorController;
 use App\Http\Controllers\MembersImportController;
 use App\Http\Controllers\UpdateManagerController;
+use App\Http\Controllers\ViewInspectorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,7 @@ use App\Http\Controllers\UpdateManagerController;
 |
 */
 
+Route::get('/view-inspector',[ViewInspectorController::class,'index']);
 
 /**
  * Only un-authenticated users - note authenticated users will 
@@ -30,6 +32,29 @@ use App\Http\Controllers\UpdateManagerController;
 Route::middleware(['guest:contact,web'])->get('/', function() {
     return view('welcome');
 })->name('welcome');
+
+
+Route::middleware(['guest:contact,web'])->get('/register', function() {
+    return view('organisation.register');
+})->name('register');
+
+
+
+/**
+ * route:/register/account
+ * route name: register.setup.account
+ * auth: guest
+ * controller and method: -
+ * view:organisation.setup-account
+ * view layout: 
+ * view components: livewire: create-account
+ */
+Route::middleware(['guest:contact,web'])->get('/register/account', function() {
+    return view('organisation.setup-account');
+})->name('register.setup.account');
+
+
+
 
 
 /**
@@ -43,7 +68,7 @@ Route::middleware(['auth:contact,web','verified'])->group( function(){
      * These routes support  user impersonation for the sys admin
      */
     Route::post('/impersonate',[ImpersonatorController::class,'impersonate'])->name('impersonate.start');
-    Route::get('/impersontate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
+    Route::get('/impersonate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
 
     /**
      * Dashboard controller is used by all authenticated users and it determines 

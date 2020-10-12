@@ -1,4 +1,8 @@
-@extends('layouts.default')
+@extends('layouts.guest')
+
+@section('pagetitle')
+GroupCare login
+@endsection
 
 @section('content')
 
