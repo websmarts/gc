@@ -35,7 +35,7 @@ Route::middleware(['guest:contact,web'])->get('/', function() {
 
 
 Route::middleware(['guest:contact,web'])->get('/register', function() {
-    return view('organisation.register');
+    return view('gc.organisation.register');
 })->name('register');
 
 

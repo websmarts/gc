@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('gc.layouts.main')
 
 @section('content')
 <x-pagename>Edit Manager</x-pagename>

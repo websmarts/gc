@@ -1,9 +1,9 @@
-@extends('layouts.main')
+@extends('gc.layouts.main')
 
 @section('title')
 register
 @endsection
 
 @section('content')
-    @livewire('auth.register')
+    @livewire('gc.auth.register')
 @endsection

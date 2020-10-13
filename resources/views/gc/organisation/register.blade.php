@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('gc.layouts.guest')
 
 @section('pagetitle')
 Register an organisation
@@ -8,6 +8,6 @@ Register an organisation
 
 @section('content')
 
-<livewire:register-organisation />
+@livewire('register-organisation')
 
 @endsection

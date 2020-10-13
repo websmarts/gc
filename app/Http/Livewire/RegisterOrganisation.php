@@ -20,6 +20,6 @@ class RegisterOrganisation extends Component
     
     public function render()
     {
-        return view('livewire.register-organisation');
+        return view('livewire.gc.register-organisation');
     }
 }

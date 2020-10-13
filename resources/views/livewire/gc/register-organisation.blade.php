@@ -1,38 +1,38 @@
 <div>
 
-    <x-nav-stepper>
-        <x-nav-stepper-step :state="$registrationSteps[1]" linkto="{{ route('register.setup.account') }}">
+    <x-gc.nav-stepper>
+        <x-gc.nav-stepper-step :state="$registrationSteps[1]" linkto="{{ route('register.setup.account') }}">
             <x-slot name="title">Create an account</x-slot>
             <x-slot name="description">
                 To setup an account we need the name of the organisation plus the name and email address of the person setting the account up.
             </x-slot>
-        </x-nav-stepper-step>
+        </x-gc.nav-stepper-step>
 
-        <x-nav-stepper-step :state="$registrationSteps[2]">
+        <x-gc.nav-stepper-step :state="$registrationSteps[2]">
             <x-slot name="title">Organisation profile</x-slot>
             <x-slot name="description">
                 Provide information about the organisation
             </x-slot>
-        </x-nav-stepper-step>
+        </x-gc.nav-stepper-step>
 
-        <x-nav-stepper-step :state="$registrationSteps[3]">
+        <x-gc.nav-stepper-step :state="$registrationSteps[3]">
             <x-slot name="title">Configure Membership Types</x-slot>
             <x-slot name="description">
                 Setup support for the types of memberships your organisation offers. eg individual, family
             </x-slot>
-        </x-nav-stepper-step>
+        </x-gc.nav-stepper-step>
 
-        <x-nav-stepper-step :state="$registrationSteps[4]" islaststep="true">
+        <x-gc.nav-stepper-step :state="$registrationSteps[4]" islaststep="true">
             <x-slot name="title">Update member register</x-slot>
             <x-slot name="description">
                 Update the members register to reflect the organisations current member list. Organisations with a large number of members may wish to import their members using a spreadsheet.
             </x-slot>
-        </x-nav-stepper-step>
+        </x-gc.nav-stepper-step>
 
 
 
 
-    </x-nav-stepper>
+    </x-gc.nav-stepper>
 
 
 
@@ -75,13 +75,13 @@
 
                 <div class="mt-6 sm:mt-5">
 
-                    <x-form-input name="organisation_name">Organisation name</x-form-input>
+                    <x-gc.form-input name="organisation_name">Organisation name</x-gc.form-input>
 
-                    <x-form-input name="contact_name">Contact name</x-form-input>
+                    <x-gc.form-input name="contact_name">Contact name</x-gc.form-input>
 
-                    <x-form-input name="contact_email">Contact email address</x-form-input>
+                    <x-gc.form-input name="contact_email">Contact email address</x-gc.form-input>
 
-                    <x-form-input name="contact_name">Contact name</x-form-input>
+                    <x-gc.form-input name="contact_name">Contact name</x-gc.form-input>
 
 
 

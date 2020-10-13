@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('gc.layouts.guest')
 
 @section('pagetitle')
 GroupCare login
@@ -7,5 +7,6 @@ GroupCare login
 @section('content')
 
 <livewire:auth.login />
-
+<x-gc.alert />
+<x-gc.wally-alert />
 @endsection

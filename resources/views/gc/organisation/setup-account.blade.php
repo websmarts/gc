@@ -1,4 +1,4 @@
-@extends('layouts.guest');
+@extends('gc.layouts.guest');
 
 @section('pagetitle')
 Create Organisation Account

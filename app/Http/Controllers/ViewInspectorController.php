@@ -32,18 +32,6 @@ class ViewInspectorController extends Controller
     public function index()
     {
         
-        
-        Artisan::call('route:list --columns="uri,name,middleware,method" --json');
-
-        $routes = collect(json_decode(Artisan::output()))->filter(function($value,$key){
-            if (!empty($value->name) && !Str::contains($value->uri,'ignition') ){
-                return $value;
-            }
-
-        });
-
-        dd($routes);
-        
         $this->files = Storage::disk('views')->allFiles();
 
         foreach ($this->files as $this->fileName) {

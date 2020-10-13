@@ -56,14 +56,14 @@
 
                 <!-- mobile sidebar nav -->
                 <nav class="mt-5 px-2 space-y-1">
-                  <x-nav-guest-links></x-nav-guest-links>
+                  <x-gc.nav-guest-links></x-gc.nav-guest-links>
                 </nav>
 
               </div>
 
               <!-- mobile sidebar user menu -->
               <div class="flex-shrink-0 flex border-t border-indigo-700 p-4">
-              <x-nav-link to="{{ route('login') }}">Login</x-nav-link>
+              <x-gc.nav-link to="{{ route('login') }}">Login</x-gc.nav-link>
               </div>
 
             </div>
@@ -85,12 +85,12 @@
                 </div>
 
                 <nav class="mt-5 flex-1 px-2 bg-indigo-900 space-y-1">
-                  <x-nav-guest-links></x-nav-guest-links>
+                  <x-gc.nav-guest-links></x-gc.nav-guest-links>
                 </nav>
 
               </div>
               <div class="flex-shrink-0 flex border-t border-indigo-700 p-4">
-                   <x-nav-link to="{{ route('login') }}">Login</x-nav-link>
+                   <x-gc.nav-link to="{{ route('login') }}">Login</x-gc.nav-link>
               </div>
             </div>
           </div>

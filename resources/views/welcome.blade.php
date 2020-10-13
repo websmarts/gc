@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('gc.layouts.guest')
 
 @section('pagetitle')
 
@@ -17,7 +17,7 @@
 
 
 
-<x-welcome-info />
+<x-gc.welcome-info />
 
 
 
