@@ -34,9 +34,9 @@ Route::middleware(['guest:contact,web'])->get('/', function() {
 })->name('welcome');
 
 
-Route::middleware(['guest:contact,web'])->get('/register', function() {
-    return view('gc.organisation.register');
-})->name('register');
+// Route::middleware(['guest:contact,web'])->get('/register', function() {
+//     return view('gc.organisation.register');
+// })->name('register');
 
 
 
@@ -49,9 +49,9 @@ Route::middleware(['guest:contact,web'])->get('/register', function() {
  * view layout: 
  * view components: livewire: create-account
  */
-Route::middleware(['guest:contact,web'])->get('/register/account', function() {
-    return view('organisation.setup-account');
-})->name('register.setup.account');
+// Route::middleware(['guest:contact,web'])->get('/register/account', function() {
+//     return view('organisation.setup-account');
+// })->name('register.setup.account');
 
 
 
@@ -64,16 +64,16 @@ Route::middleware(['guest:contact,web'])->get('/register/account', function() {
  */
 Route::middleware(['auth:contact,web','verified'])->group( function(){
 
-    /**
-     * These routes support  user impersonation for the sys admin
-     */
-    Route::post('/impersonate',[ImpersonatorController::class,'impersonate'])->name('impersonate.start');
-    Route::get('/impersonate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
+//     /**
+//      * These routes support  user impersonation for the sys admin
+//      */
+//     Route::post('/impersonate',[ImpersonatorController::class,'impersonate'])->name('impersonate.start');
+//     Route::get('/impersonate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
 
-    /**
-     * Dashboard controller is used by all authenticated users and it determines 
-     * the correct dashboard to display for the user.
-     */
+//     /**
+//      * Dashboard controller is used by all authenticated users and it determines 
+//      * the correct dashboard to display for the user.
+//      */
     Route::middleware(['auth:contact,web','verified'])->get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
 
@@ -84,36 +84,34 @@ Route::middleware(['auth:contact,web','verified'])->group( function(){
  * including sysadmin, organisation managers but NOT individual contacts
  * as they are authenticated via the contact guard
  */
-Route::middleware(['auth:web','verified'])->group( function(){
+// Route::middleware(['auth:web','verified'])->group( function(){
 
-    /**
-     * Managers and sysadmin use these routes to update user details
-     */
-    Route::get('user/{user}/edit',[UpdateManagerController::class, 'edit'])->name('user.edit');
-    Route::put('user/{user}/name',[UpdateManagerController::class, 'updateName'])->name('user.update.name');
-    Route::put('user/{user}/email',[UpdateManagerController::class, 'updateEmail'])->name('user.update.email');
-    Route::put('user/{user}/password',[UpdateManagerController::class, 'updatePassword'])->name('user.update.password');
+//     /**
+//      * Managers and sysadmin use these routes to update user details
+//      */
+//     Route::get('user/{user}/edit',[UpdateManagerController::class, 'edit'])->name('user.edit');
+//     Route::put('user/{user}/name',[UpdateManagerController::class, 'updateName'])->name('user.update.name');
+//     Route::put('user/{user}/email',[UpdateManagerController::class, 'updateEmail'])->name('user.update.email');
+//     Route::put('user/{user}/password',[UpdateManagerController::class, 'updatePassword'])->name('user.update.password');
 
-    /**
-     * Routes for updating organisation details
-     * 
-     * This is a dummy one for now
-     */
-    Route::get('organisation/{organisation}/edit', function(Organisation $organisation){
-        dd($organisation);
-       })->name('organisation.edit');
-
-
-});
+//     /**
+//      * Routes for updating organisation details
+//      * 
+//      * This is a dummy one for now
+//      */
+//     Route::get('organisation/{organisation}/edit', function(Organisation $organisation){
+//         dd($organisation);
+//        })->name('organisation.edit');
 
 
-/**
- * Experimental code for uploading excel files with member data
- */
-Route::get('uploadfile',[MembersImportController::class, 'index']);
-Route::post('uploadfile',[MembersImportController::class, 'import']);
+// });
 
 
+// /**
+//  * Experimental code for uploading excel files with member data
+//  */
+// Route::get('uploadfile',[MembersImportController::class, 'index']);
+// Route::post('uploadfile',[MembersImportController::class, 'import']);
 
 
 
@@ -122,28 +120,31 @@ Route::post('uploadfile',[MembersImportController::class, 'import']);
 
 
 
-Route::get('contactlogin', function() {
-
-    $user = App\Models\Contact::first();
-    Auth::guard('contact')->login($user);
 
 
-    return redirect('/');
-});
+// Route::get('contactlogin', function() {
 
-Route::get('/contact/home',function(){
-   dd('contact home page ');
-});
+//     $user = App\Models\Contact::first();
+//     Auth::guard('contact')->login($user);
 
-Route::get('contacthome', function(){
-    //Auth::guard('contact')->logout();
+
+//     return redirect('/');
+// });
+
+// Route::get('/contact/home',function(){
+//    dd('contact home page ');
+// });
+
+// Route::get('contacthome', function(){
+//     //Auth::guard('contact')->logout();
     
 
-   Auth::guard('contact')->user()->leaveImpersonation();
-//    dd(Auth::guard('contact')->User());
-//    dd(Auth::User());
-   return redirect('/');
-});
+//    Auth::guard('contact')->user()->leaveImpersonation();
+// //    dd(Auth::guard('contact')->User());
+// //    dd(Auth::User());
+//    return redirect('/');
+// });
+
 
 
 

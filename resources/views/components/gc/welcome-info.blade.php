@@ -1,7 +1,8 @@
-<div class="grid grid-cols-1 md:grid-cols-2   border-gray-200 border-t-0 border-b-0 " >
+<div {{ $attributes->merge(['class' => 'grid grid-cols-1 md:grid-cols-2   border-gray-200 border-t-0 border-b-0 ']) }} >
         <div class="p-6" >
             <div class="flex items-center">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg><div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="#">Key benefits</a></div>
+            <img class="h-12 w-auto" src="images/brand_logo.svg" />
+            <a class="block mx-3 text-2xl" href="#">Key benefits</a>
             </div>
 
             <div class="ml-12">
@@ -29,8 +30,9 @@
         </div>
 
         <div class="p-6 border-t border-gray-200 md:border-t-0 md:border-l">
-            <div class="flex items-center">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg><div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">Documentation</div>
+        <div class="flex items-center">
+            <img class="h-12 w-auto" src="images/brand_logo.svg" />
+            <a class="block mx-3 text-2xl" href="#">Documentation</a>
             </div>
 
             <div class="ml-12">
@@ -40,7 +42,7 @@
 
                 <a href="https://laravel.com/docs">
                     <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
-                            <div>Explore the documentation</div>
+                            <div>View documentation</div>
 
                             <div class="ml-1 text-indigo-500">
                                 <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -51,8 +53,9 @@
         </div>
 
         <div class="p-6 border-t border-gray-200">
-            <div class="flex items-center">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg> <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://tailwindcss.com/">Testimonials</a></div>
+        <div class="flex items-center">
+            <img class="h-12 w-auto" src="images/brand_logo.svg" />
+            <a class="block mx-3 text-2xl" href="#">Testimonials</a>
             </div>
 
             <div class="ml-12">
@@ -75,9 +78,9 @@
         </div>
 
         <div class="p-6 border-t border-gray-200 md:border-l">
-            <div class="flex items-center">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">Register your group</div>
+        <div class="flex items-center">
+            <img class="h-12 w-auto" src="images/brand_logo.svg" />
+            <a class="block mx-3 text-2xl" href="#">Register your group</a>
             </div>
 
             <div class="ml-12">
@@ -85,9 +88,13 @@
                     Groupcare welcomes registrations from new groups or organisations. The service is free groups and each new subscriber enhances the effectiveness GroupCare itself which further enhances the benefits it offers to all subscribers.
                 </div>
 
-                <a href="#">
+                <a href="{{ route('register') }}">
                     <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
-                            <a href="{{ route('register') }}" class="btn btn-blue">Register here</a>
+                            <div>Register here</div>
+
+                            <div class="ml-1 text-indigo-500">
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            </div>
 
                     </div>
                 </a>

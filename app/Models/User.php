@@ -2,24 +2,21 @@
 
 namespace App\Models;
 
-
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
-use App\Traits\UserHasRolesTrait as HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
 
-
-
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-
+    use HasApiTokens;
     use HasFactory;
+    use HasProfilePhoto;
     use Notifiable;
-    use Impersonate;
-    use HasRoles;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,15 +24,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'is_admin',
-        'uuid',
         'name',
         'email',
-        'email_verified_at',
         'password',
+        'uuid'
     ];
-
-
 
     /**
      * The attributes that should be hidden for arrays.
@@ -43,7 +36,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'is_admin',
         'password',
         'remember_token',
         'two_factor_recovery_codes',
@@ -60,47 +52,11 @@ class User extends Authenticatable
     ];
 
     /**
-     * is_admin Mutator - stops attribute being updated unless its null
+     * The accessors to append to the model's array form.
+     *
+     * @var array
      */
-    public function setIsAdminAttribute($value)
-    {
-       if( is_null($this->is_admin) ){
-        $this->attributes['is_admin'] = $value;
-       }   
-    }   
-
-       
-    
-    /**
-     * UUID Mutator - stops uuid being updated unless its null
-     */
-    public function setUuidAttribute($value)
-    {
-        if( !(isSet($this->attributes['uuid']) &&  $this->attributes['uuid']) ){
-            $this->attributes['uuid'] = $value;
-        }     
-    }
-
-    /**
-     * Lets route model binding to use uuid
-     */
-    public function getRouteKeyName()
-    {
-        return 'uuid';
-    }
-
-
-    /**
-     * Check if this user allowed to impersonate another user
-     * @return bool
-     */
-    public function canImpersonate()
-    {
-        return $this->hasRole('system-administrator');
-    }
-
-    public function organisations()
-    {
-        return $this->belongsToMany('App\Models\Organisation', 'organisation_managers');
-    }
+    protected $appends = [
+        'profile_photo_url',
+    ];
 }
