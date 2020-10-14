@@ -34,33 +34,27 @@
             <span class="block text-2xl md:text-4xl px-2 py-4">GroupCare </span>
         </a>
 
-        <div class="hidden sm:flex justify-center items-strech space-x-4 pt-2 pb-2 mt-4 w-1/3">
-        <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
-        <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-        <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
-           
-
-            
+        <!-- static mainnav -->
+        <div class="hidden sm:flex justify-center items-strech space-x-4 pt-2 pb-2 mt-8 w-1/3">
+            <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
+            <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
+            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>    
         </div>
 
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 pr-4">
             <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('login') }}">Login</a>
-
-            <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
+            <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
         </div>
 
     </div>
 
-    <!-- mobile menu -->
+    <!-- mobile mainnav -->
     <div class="sm:hidden flex bg-teal-900 w-full border-t border-gray-500">
-        <div class="flex sm:hidden justify-center items-strech space-x-4 pt-2 pb-2 mt-4 w-full">
+        <div class="flex sm:hidden justify-center items-strech space-x-4  mt-4 w-full">
             <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
             <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
-            
-
-                
+            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>           
         </div>
     </div>
 
