@@ -83,6 +83,12 @@ Route::middleware(['auth','verified'])->group( function(){
     
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
+    Route::get('organisation/register', function() {
+
+        return view('manager.organisation-register');
+
+    })->name('organisation.register');
+
     Route::get('/organisation/{organisation}/edit',[OrganisationProfileController::class,'edit'])->name('organisation.profile.edit');
 
 });
