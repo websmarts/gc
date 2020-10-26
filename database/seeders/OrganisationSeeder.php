@@ -31,7 +31,11 @@ class OrganisationSeeder extends Seeder
 
         
         for($n = 0; $n <200; $n++){
-            Organisation::factory(1)->create()->first()->managers()->attach(User::find(rand(2,50)));
+            Organisation::factory(1)
+            ->create(['address_id'=>Address::factory(1)->create()->first()->id])
+            ->first()
+            ->managers()
+            ->attach(User::find(rand(2,50)));
         }
             
             

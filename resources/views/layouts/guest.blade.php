@@ -46,8 +46,7 @@
             <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('login') }}">Login</a>
             <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
         </div>
-
-    </div>
+    </div><!-- end static header -->
 
     <!-- mobile mainnav -->
     <div class="sm:hidden flex bg-teal-900 w-full border-t border-gray-500">

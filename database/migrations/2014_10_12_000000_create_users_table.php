@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->text('profile_photo_path')->nullable();
             $table->integer('is_admin')->default(0);
             $table->string('uuid')->unique()->index();
+            $table->string('last_selected_organisation_uuid')->nullable();
             $table->timestamps();
         });
     }

@@ -14,6 +14,11 @@ class Address extends Model
 
     protected $dates = ['deleted_at'];
 
+    public function getFullAddressAttribute()
+    {
+        return "{$this->address1} {$this->address2}, {$this->city} {$this->postcode} {$this->state->name}";
+    }
+
 
     public function state()
     {

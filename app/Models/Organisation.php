@@ -20,7 +20,8 @@ class Organisation extends Model
            'name',
            'abn',
            'gst_registered',
-           'address_id'
+           'address_id',
+           'uuid'
     ];
 
     protected $dates = ['deleted_at'];
@@ -43,7 +44,7 @@ class Organisation extends Model
 
     public function address()
     {
-        return $this->hasOne(Address::class);
+        return $this->belongsTo(Address::class);
     }
 
     public function contacts()
@@ -65,7 +66,7 @@ class Organisation extends Model
    {
        $query =  DB::table('contacts')
        ->select(
-            'contacts.id', 'contacts.name', 'contacts.phone', 'contacts.email',
+            'contacts.id as contact_id', 'contacts.name', 'contacts.phone', 'contacts.email',
             'addresses.address1', 'addresses.address2', 'addresses.city', 'addresses.postcode',
             'states.name as state',
             'contacts_memberships.is_primary_contact as is_primary_contact',
@@ -85,10 +86,7 @@ class Organisation extends Model
        return $query->get();
    }
 
-    public function contactRoles()
-    {
-        
-    }
+   
     
             
 }

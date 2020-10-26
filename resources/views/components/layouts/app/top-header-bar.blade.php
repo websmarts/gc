@@ -19,6 +19,13 @@
                 </svg>
                 <span class="block px-2 text-teal-900 text-3xl">GroupCare</span>
             </div>
+
+            <!-- Static Organisation selector -->
+            <div class="flex items-center invisible sm:visible">
+                
+                <livewire:organisation-selector />
+
+            </div><!-- end of static organisation selector -->
         </div>
         <div class="ml-4 flex items-center md:ml-6">
             <button class="p-1 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:shadow-outline focus:text-gray-500" aria-label="Notifications">

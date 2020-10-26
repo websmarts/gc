@@ -10,6 +10,9 @@ use App\Http\Controllers\ImpersonatorController;
 use App\Http\Controllers\MembersImportController;
 use App\Http\Controllers\UpdateManagerController;
 use App\Http\Controllers\ViewInspectorController;
+use App\Http\Controllers\OrganisationSetController;
+use App\Http\Controllers\OrganisationProfileController;
+use App\Http\Controllers\OrganisationSelectorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +77,18 @@ Route::middleware(['auth:contact,web','verified'])->group( function(){
 //      * Dashboard controller is used by all authenticated users and it determines 
 //      * the correct dashboard to display for the user.
 //      */
-    Route::middleware(['auth:contact,web','verified'])->get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+
+
+Route::middleware(['auth','verified'])->group( function(){
+    
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+
+    Route::get('/organisation/{organisation}/edit',[OrganisationProfileController::class,'edit'])->name('organisation.profile.edit');
+
+});
+    
+    
+    
 
 
 });

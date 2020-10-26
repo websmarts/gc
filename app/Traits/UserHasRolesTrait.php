@@ -22,6 +22,7 @@ trait UserHasRolesTrait
 
     /**
      * Check if user has one of the roles listed in $roles
+     * $roles can be an array or a csv string
      */
     public function hasRole($roles = false)
     {
@@ -68,7 +69,8 @@ trait UserHasRolesTrait
         if ($modelClass == "App\Models\User") {
             $roles = [
                 'system-administrator' => $this->hasAttribute('is_admin') ? $this->is_admin  === 1 : false,
-                'account-manager' => $this->hasAttribute('is_admin') ? $this->is_admin  === 0 : false,
+                'account-manager' => $this->hasAttribute('is_admin') ? ($this->is_admin  === 0 && $this->email_verified_at) : false,
+                'pending-account-manager' => $this->hasAttribute('is_admin') ? ($this->is_admin  === 0 && is_null($this->email_verified_at) ) : false,
             ];
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Address;
 use App\Models\Membership;
 use App\Models\MembershipType;
 use Illuminate\Support\Facades\Session;
@@ -52,6 +53,8 @@ class Contact extends Authenticatable
     {
         return 'uuid';
     }
+
+
     
     public function organisation()
     {
@@ -63,5 +66,10 @@ class Contact extends Authenticatable
     {
         return $this->belongsToMany(Membership::class,'contacts_memberships','membership_id','contact_id')
                 ->withPivot('is_primary_contact');
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }

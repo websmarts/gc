@@ -30,7 +30,6 @@
             <x-layouts.app.mobile-nav />
         </div>
 
-
         <!-- Static sidebar for desktop -->
         <x-layouts.app.static-nav />
 
