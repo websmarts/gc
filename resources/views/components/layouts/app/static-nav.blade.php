@@ -13,12 +13,12 @@
                     <x-layouts.app.nav-link  color="teal" to="{{ route('dashboard') }}">Dashboard</x-layouts.app.nav-link>
                     <x-nav.spacer></x-nav.spacer>
 
-                    @if(selected_organisation())
-                        <x-layouts.app.nav-link  color="teal" to="{{ route('organisation.profile.edit',['organisation'=>selected_organisation()]) }}">Organisation profile</x-layouts.app.nav-link>
+                    @if(Auth::user()->selectedOrganisation())
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('organisation.profile.edit',['organisation'=>Auth::user()->selectedOrganisation()]) }}">Organisation profile</x-layouts.app.nav-link>
                     
-                        <x-layouts.app.nav-link  color="teal" to="#">Membership options</x-layouts.app.nav-link>
-                        <x-layouts.app.nav-link  color="teal" to="#">Members register</x-layouts.app.nav-link>
-                        <x-layouts.app.nav-link  color="teal" to="#">Key Contacts</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('membershiptypes') }}">Membership options</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('members.register') }}">Membership register</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="#">Contacts</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Communications</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Settings</x-layouts.app.nav-link>
 

@@ -84,10 +84,20 @@ Route::middleware(['auth','verified'])->group( function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
     Route::get('organisation/register', function() {
-
         return view('manager.organisation-register');
-
     })->name('organisation.register');
+
+    Route::get('membershiptypes', function() {
+        return view('manager.membershiptypes');
+    })->name('membershiptypes');
+
+    Route::get('membersregister', function() {
+        return view('manager.membersregister');
+    })->name('members.register');
+
+    Route::get('createmembership', function() {
+        return view('manager.create-membership');
+    })->name('create.membership');
 
     Route::get('/organisation/{organisation}/edit',[OrganisationProfileController::class,'edit'])->name('organisation.profile.edit');
 

@@ -4,10 +4,10 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 
-class MemberTYpes extends Component
+class MemberTypes extends Component
 {
     public function render()
     {
-        return view('livewire.member-t-ypes');
+        return view('livewire.member-types');
     }
 }

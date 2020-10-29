@@ -22,9 +22,7 @@
 
             <!-- Static Organisation selector -->
             <div class="flex items-center invisible sm:visible">
-                
-                <livewire:organisation-selector />
-
+                {{ auth()->user()->selectedOrganisation()->name }}
             </div><!-- end of static organisation selector -->
         </div>
         <div class="ml-4 flex items-center md:ml-6">

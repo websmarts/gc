@@ -48,6 +48,7 @@ class RegisterOrganisation extends Component
 
         auth()->user()->last_selected_organisation_uuid = $organisation->uuid;
 
+        session()->flash('message', 'Organisation has been added and is linked to this account');
 
         return redirect('/dashboard');
         

@@ -64,7 +64,7 @@ class Contact extends Authenticatable
 
     public function memberships()
     {
-        return $this->belongsToMany(Membership::class,'contacts_memberships','membership_id','contact_id')
+        return $this->belongsToMany(Membership::class,'contacts_memberships','contact_id','membership_id')
                 ->withPivot('is_primary_contact');
     }
 

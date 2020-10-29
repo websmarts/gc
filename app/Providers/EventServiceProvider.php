@@ -19,9 +19,14 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        // Login::class => [
-        //     \App\Listeners\UserHasLoggedIn::class,
-        // ],
+        'App\Events\MembershipDeleted' => [
+                'App\Listeners\DeleteMembershipContacts',
+                'App\Listeners\DeleteMembershipTransactions',
+        ],
+        'App\Events\ContactDeleted' => [
+            'App\Listeners\PurgeContactFromLists',
+        
+        ],
     ];
 
     /**

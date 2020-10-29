@@ -14,10 +14,12 @@ class OrganisationProfileEdit extends Component
     public  $address;
     public  $states;
 
+    // TODO update to final validation rules
     protected $rules = [
         'organisation.name' => 'required',
         'organisation.abn' => 'required',
         'organisation.gst_registered' => 'required',
+        'organisation.phone' => 'required',
         'address.address1' => 'required',
         'address.address2' => 'nullable',
         'address.city' => 'required',

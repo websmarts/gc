@@ -55,6 +55,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function selectedOrganisation()
+    {
+        return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+    }
    
     /**
      * Model relationships

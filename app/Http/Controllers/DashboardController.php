@@ -8,11 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    protected $user; // current auth user
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
-
+        
         // Check for system admin user
-        if (auth()->user()->hasRole('system-administrator')) {
+        if ($this->user->hasRole('system-administrator')) {
             return view('admin.dashboard');
         }
 
@@ -24,14 +35,14 @@ class DashboardController extends Controller
 
 
         // Check if user is an Organisation Manager
-        abort_if(!auth()->user()->checkRole('account-manager'), 403);
+        abort_if(!$this->user->checkRole('account-manager'), 403);
 
-        $organisations = auth()->user()->organisations;
+        $organisations = $this->user->organisations;
 
 
-        if ($uuid = auth()->user()->last_selected_organisation_uuid) {
+        if ($uuid = $this->user->selectedOrganisation()) {
             $organisation = Organisation::where('uuid', $uuid)->first();
-            return view('manager.dashboard', compact('organisation','organisations'));
+            return view('manager.dashboard', compact('organisation', 'organisations'));
         }
 
         // if ($uuid = selected_organisation()) {
@@ -41,8 +52,10 @@ class DashboardController extends Controller
 
         if ($organisations->count() > 0) {
             $organisation = $organisations->first();
-            selected_organisation($organisation->uuid);
-            return view('manager.dashboard', compact('organisation','organisations'));
+            $this->user->last_selected_organisation_uuid = $organisation->uuid;
+            $this->user->save();
+            
+            return view('manager.dashboard', compact('organisation', 'organisations'));
         }
 
         return view('manager.organisation-register');
