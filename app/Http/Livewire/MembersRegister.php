@@ -3,7 +3,9 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use App\Rules\inputdate;
 use App\Models\Membership;
+use Illuminate\Support\Carbon;
 use App\Events\MembershipDeleted;
 use App\Models\Contact as Member;
 use App\Models\ContactMembership;
@@ -17,41 +19,56 @@ class MembersRegister extends Component
     public $membershipTypes;
 
     public $editing; // Membership Model
+    public $proxy_start_date; // temp holder for editing.start_date
+
+
+
     public $showEditMembershipModal = false;
     public $showConfirmDeleteMembershipModal = false;
 
-    protected $rules =  [
-        'editing.name'=>'required',
-        'editing.membership_type_id' => 'required',
-        'editing.start_date_for_display' => 'required',
-        'editing.status' => 'required',
-    ];
+   
+
+    public function rules()
+    {
+        return $rules =  [
+            'editing.name'=>'required',
+            'editing.membership_type_id' => 'required',
+            'proxy_start_date' => ['nullable', new inputdate],
+            'editing.status' => 'required',
+        ];
+    }
+
+    public function updated($name,$value)
+    {
+        if($name == 'proxy_start_date'){
+            $this->proxy_start_date = str_replace('/','-',$value) ;
+        }  
+    }
 
     public function edit(Membership $membership)
     {
         $this->editing = $membership;
+
+        $this->proxy_start_date = optional($this->editing->start_date)->format('d-m-Y'); 
         $this->showEditMembershipModal = true;
     }
 
+    /**
+     * Save Membership
+     */
     public function saveMembership()
     {
+        $this->validate();
+        
+        $this->editing->start_date = new Carbon($this->proxy_start_date); // proxy date must be in dd-mm-yyyy NOT dd/mm/yyyyformat
+
         $this->editing->save();
         $this->showEditMembershipModal = false;
     }
 
     public function deleteMembership()
     {
-        // Delete the $this->editing model
-        // and delete any contacts associated with it if they only belong to this membership
-        // and delete and outstanding transactions for this membership
-        // maybe just fire an event that membership was deleted and take care of business there
-        // Keep in mind the delete is a soft delete for now, we may choose to do a hard delete once 
-        // the delete tidy up has been done
 
-
-        // TODO write the event listner code to delete contacts and other cleanup
-        // When a member is deleted.
-        //event(new MembershipDeleted($this->editing));
         $this->editing->delete();
 
         // Close both modals
@@ -62,8 +79,8 @@ class MembersRegister extends Component
   
     public function render()
     {
-        $this->memberships = auth()->user()->selectedOrganisation()->memberships()->with('members','membershipType')->get();
-        $this->membershipTypes = auth()->user()->selectedOrganisation()->membershipTypes;
+        $this->memberships = selectedOrganisation()->memberships()->with('members','membershipType')->get();
+        $this->membershipTypes = selectedOrganisation()->membershipTypes;
        
         return view('livewire.members-register');
     }

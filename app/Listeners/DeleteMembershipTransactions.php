@@ -3,8 +3,9 @@
 namespace App\Listeners;
 
 use App\Events\MembershipDeleted;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\MembershipWasDeleted;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class DeleteMembershipTransactions
 {
@@ -24,8 +25,8 @@ class DeleteMembershipTransactions
      * @param  MembershipDeleted  $event
      * @return void
      */
-    public function handle(MembershipDeleted $event)
+    public function handle(MembershipWasDeleted $event)
     {
-        //
+       // TODO delete Transactions for deleted Membership Model
     }
 }

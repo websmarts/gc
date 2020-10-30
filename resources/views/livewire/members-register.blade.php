@@ -23,8 +23,8 @@
                     <x-button.link class="hover:underline" wire:click="edit({{ $membership->id }})">{{ $membership->name }}</x-button.link>
                 </x-table.cell>
                 <x-table.cell>{{ App\Models\Membership::STATUSES[$membership->status] }}</x-table.cell>
-                <x-table.cell>{{ $membership->members->count() }}</x-table.cell>
-                <x-table.cell>{{ $membership->start_date_for_display }}</x-table.cell>
+                <x-table.cell><a href="{{ route('membership.members',['membership'=> $membership->id])}}" >{{ $membership->members->count() }}</a></x-table.cell>
+                <x-table.cell>{{ optional($membership->start_date)->format('d-m-Y') }}</x-table.cell>
 
             </x-table.row>
 
@@ -51,7 +51,7 @@
                 </x-input.group>
 
                 <x-input.group for="membership_type_id" label="Membership type">
-                    <x-input.select id="membership_type_id" wire:model="editing.membership_type_id">
+                    <x-input.select id="membership_type_id" wire:model.defer="editing.membership_type_id">
                         @foreach($membershipTypes as $mt)
                         <option value="{{ $mt->id }}">{{ $mt->name }}</option>
                         @endforeach
@@ -73,8 +73,8 @@
 
 
                 <x-input.group for="start_date" label="Start date">
-                    <x-input.text id="start_date" wire:model.defer='editing.start_date_for_display'></x-input.text>
-                    <x-input.error for="editing.start_date_for_display" />
+                    <x-input.text id="start_date" wire:model.defer='proxy_start_date'></x-input.text>
+                    <x-input.error for="proxy_start_date" />
                 </x-input.group>
 
             </x-slot>

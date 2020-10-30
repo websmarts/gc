@@ -78,6 +78,7 @@ Route::middleware(['auth:contact,web','verified'])->group( function(){
 //      * the correct dashboard to display for the user.
 //      */
 
+// TODO add a get logout url
 
 Route::middleware(['auth','verified'])->group( function(){
     
@@ -98,6 +99,11 @@ Route::middleware(['auth','verified'])->group( function(){
     Route::get('createmembership', function() {
         return view('manager.create-membership');
     })->name('create.membership');
+
+    Route::get('membership/{membership}/members', function($membership) {
+
+        return view('manager.membership-members')->with('membership',$membership);
+    })->name('membership.members');
 
     Route::get('/organisation/{organisation}/edit',[OrganisationProfileController::class,'edit'])->name('organisation.profile.edit');
 

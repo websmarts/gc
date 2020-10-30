@@ -2,9 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Events\MembershipDeleted;
-use Illuminate\Contracts\Queue\ShouldQueue;
+
+use App\Events\MembershipWasDeleted;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class DeleteMembershipContacts
 {
@@ -24,9 +25,8 @@ class DeleteMembershipContacts
      * @param  MembershipDeleted  $event
      * @return void
      */
-    public function handle(MembershipDeleted $event)
+    public function handle( MembershipWasDeleted $event)
     {
-        dd(['Okay I will delete', $event->membership] );
-        dd('dying inside the handle method of the DeleteMambershipContacts Listener');
+        // TODO delete Membership contacts when membership Model deleted 
     }
 }

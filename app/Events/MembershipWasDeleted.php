@@ -11,7 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MembershipDeleted
+class MembershipWasDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,7 +24,8 @@ class MembershipDeleted
      */
     public function __construct(Membership $membership)
     {
-        $this->membership = $membership; // the soft-deleted membership
+        $this->membership = $membership;
+       
     }
 
     /**
@@ -34,6 +35,6 @@ class MembershipDeleted
      */
     public function broadcastOn()
     {
-       // return new PrivateChannel('channel-name');
+        // return new PrivateChannel('channel-name');
     }
 }
