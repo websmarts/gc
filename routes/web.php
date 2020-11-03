@@ -25,14 +25,22 @@ use App\Http\Controllers\OrganisationSelectorController;
 |
 */
 
-Route::get('/view-inspector',[ViewInspectorController::class,'index']);
+Route::get('/view-inspector', [ViewInspectorController::class, 'index']);
+
+/**
+ * Members moving to groupcare register here
+ */
+Route::get('member/registration/for/{slug}',function($slug){
+    $organisation = Organisation::where('slug',$slug)->firstOrFail();
+    return view('member.registration',['uuid' => $organisation->uuid]);
+});
 
 /**
  * Only un-authenticated users - note authenticated users will 
  * be redirected by middleware to their corrent dashboard
  * if they try to access this route
  */
-Route::middleware(['guest:contact,web'])->get('/', function() {
+Route::middleware(['guest:contact,web'])->get('/', function () {
     return view('welcome');
 })->name('welcome');
 
@@ -65,54 +73,59 @@ Route::middleware(['guest:contact,web'])->get('/', function() {
  * including sysadmin, organisation managers and individual
  * contacts - basically anyone who is authenticated!
  */
-Route::middleware(['auth:contact,web','verified'])->group( function(){
+Route::middleware(['auth:contact,web', 'verified'])->group(function () {
 
-//     /**
-//      * These routes support  user impersonation for the sys admin
-//      */
-//     Route::post('/impersonate',[ImpersonatorController::class,'impersonate'])->name('impersonate.start');
-//     Route::get('/impersonate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
+    //     /**
+    //      * These routes support  user impersonation for the sys admin
+    //      */
+    //     Route::post('/impersonate',[ImpersonatorController::class,'impersonate'])->name('impersonate.start');
+    //     Route::get('/impersonate-stop', [ImpersonatorController::class, 'stopImpersonate'])->name('impersonate.stop');
 
-//     /**
-//      * Dashboard controller is used by all authenticated users and it determines 
-//      * the correct dashboard to display for the user.
-//      */
+    //     /**
+    //      * Dashboard controller is used by all authenticated users and it determines 
+    //      * the correct dashboard to display for the user.
+    //      */
 
-// TODO add a get logout url
+    // TODO add a get logout url
 
-Route::middleware(['auth','verified'])->group( function(){
-    
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('organisation/register', function() {
-        return view('manager.organisation-register');
-    })->name('organisation.register');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('membershiptypes', function() {
-        return view('manager.membershiptypes');
-    })->name('membershiptypes');
+        Route::get('organisation/register', function () {
+            return view('manager.organisation-register');
+        })->name('organisation.register');
 
-    Route::get('membersregister', function() {
-        return view('manager.membersregister');
-    })->name('members.register');
+        Route::get('membershiptypes', function () {
+            return view('manager.membershiptypes');
+        })->name('membershiptypes');
 
-    Route::get('createmembership', function() {
-        return view('manager.create-membership');
-    })->name('create.membership');
+        Route::get('membersregister', function () {
+            return view('manager.membersregister');
+        })->name('members.register');
 
-    Route::get('membership/{membership}/members', function($membership) {
+        Route::get('createmembership', function () {
+            return view('manager.create-membership');
+        })->name('create.membership');
 
-        return view('manager.membership-members')->with('membership',$membership);
-    })->name('membership.members');
+        Route::get('membership/{membership}/members', function ($membership) {
 
-    Route::get('/organisation/{organisation}/edit',[OrganisationProfileController::class,'edit'])->name('organisation.profile.edit');
+            return view('manager.membership-members')->with('membership', $membership);
+        })->name('membership.members');
 
-});
-    
-    
-    
+        Route::get('contactssregister', function () {
+            return view('manager.contactsregister');
+        })->name('contacts.register');
+
+        Route::get('/organisation/{organisation}/edit', [OrganisationProfileController::class, 'edit'])->name('organisation.profile.edit');
 
 
+        /**
+         * Experimental code for uploading excel files with member data
+         */
+        Route::get('uploadfile', [MembersImportController::class, 'index']);
+        Route::post('uploadfile', [MembersImportController::class, 'import']);
+    });
 });
 
 /**
@@ -143,11 +156,7 @@ Route::middleware(['auth','verified'])->group( function(){
 // });
 
 
-// /**
-//  * Experimental code for uploading excel files with member data
-//  */
-// Route::get('uploadfile',[MembersImportController::class, 'index']);
-// Route::post('uploadfile',[MembersImportController::class, 'import']);
+
 
 
 
@@ -173,7 +182,7 @@ Route::middleware(['auth','verified'])->group( function(){
 
 // Route::get('contacthome', function(){
 //     //Auth::guard('contact')->logout();
-    
+
 
 //    Auth::guard('contact')->user()->leaveImpersonation();
 // //    dd(Auth::guard('contact')->User());
@@ -185,7 +194,7 @@ Route::middleware(['auth','verified'])->group( function(){
 
 
 
-Route::get('user/changepassword',function() {
+Route::get('user/changepassword', function () {
     return view('profile.show');
 });
 
@@ -193,4 +202,3 @@ Route::get('user/changepassword',function() {
 //     return view('library');
 
 // });
-

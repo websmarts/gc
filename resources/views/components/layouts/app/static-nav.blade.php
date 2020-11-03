@@ -18,8 +18,9 @@
                     
                         <x-layouts.app.nav-link  color="teal" to="{{ route('membershiptypes') }}">Membership options</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="{{ route('members.register') }}">Membership register</x-layouts.app.nav-link>
-                        <x-layouts.app.nav-link  color="teal" to="#">Contacts</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('contacts.register') }}">Contacts</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Communications</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="#">Governance</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Settings</x-layouts.app.nav-link>
 
                     @endif

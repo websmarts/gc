@@ -25,6 +25,8 @@ class MembershipType extends Model
 
     protected $dates = ['deleted_at'];
 
+    
+
     /**
      * Accessor so we can use dollars (not cents) for display and editing
      */

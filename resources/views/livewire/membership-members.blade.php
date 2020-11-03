@@ -72,6 +72,14 @@
                     <x-input.error for="editing.phone" />
                 </x-input.group>
 
+                <x-input.group for="is_primary_contact" label="Primary contact">
+                    <x-input.select wire:model="is_primary_contact" id="is_primary_contact" >
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </x-input.select>
+                    <x-input.error for="is_primary_contact" />
+                </x-input.group>
+
             </x-slot>
             <x-slot name="footer">
                 <div class="flex justify-between">

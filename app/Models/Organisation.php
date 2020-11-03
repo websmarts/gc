@@ -21,7 +21,9 @@ class Organisation extends Model
            'abn',
            'gst_registered',
            'address_id',
-           'uuid'
+           'phone',
+           'uuid',
+           'slug',
     ];
 
     protected $dates = ['deleted_at'];

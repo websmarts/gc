@@ -15,13 +15,13 @@ class CreateOrganisationsTable extends Migration
     {
         Schema::create('organisations', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
             $table->string('name');
+            $table->string('uuid')->unique();
+            $table->string('slug')->unique();
             $table->string('abn')->nullable();
             $table->boolean('gst_registered')->nullable();
             $table->unsignedBigInteger('address_id');
             $table->string('phone')->nullable();
-            
 
             $table->softDeletes();
             $table->timestamps();

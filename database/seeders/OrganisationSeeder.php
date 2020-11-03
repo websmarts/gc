@@ -18,11 +18,11 @@ class OrganisationSeeder extends Seeder
      */
     public function run()
     {
-        
+        $name = 'Neerim District Landcare Group';
         Organisation::create([
             'uuid'=>Str::uuid(),
-            'name'=> 'Neerim District Landcare Group',
-            
+            'name'=> $name,
+            'slug'=> Str::slug($name.'-'),
             'address_id' => Address::factory(1)->create()->first()->id,
             'gst_registered' => 1,
             'abn' => '98765456778',
@@ -30,7 +30,7 @@ class OrganisationSeeder extends Seeder
         ])->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
 
         
-        for($n = 0; $n <200; $n++){
+        for($n = 0; $n <20; $n++){
             Organisation::factory(1)
             ->create(['address_id'=>Address::factory(1)->create()->first()->id])
             ->first()

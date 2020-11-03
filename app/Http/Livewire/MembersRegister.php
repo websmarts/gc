@@ -18,6 +18,8 @@ class MembersRegister extends Component
     public $memberships;
     public $membershipTypes;
 
+    public $search ='';
+
     public $editing; // Membership Model
     public $proxy_start_date; // temp holder for editing.start_date
 
@@ -36,6 +38,11 @@ class MembersRegister extends Component
             'proxy_start_date' => ['nullable', new inputdate],
             'editing.status' => 'required',
         ];
+    }
+
+    public function mount()
+    {
+        $this->membershipTypes = selectedOrganisation()->membershipTypes;
     }
 
     public function updated($name,$value)
@@ -79,8 +86,13 @@ class MembersRegister extends Component
   
     public function render()
     {
-        $this->memberships = selectedOrganisation()->memberships()->with('members','membershipType')->get();
-        $this->membershipTypes = selectedOrganisation()->membershipTypes;
+        $this->memberships = selectedOrganisation()->memberships()
+        ->where('memberships.name','LIKE','%'.$this->search .'%')
+        ->orderBy('name')
+        ->with(['members','membershipType'])
+        ->get();
+
+        
        
         return view('livewire.members-register');
     }

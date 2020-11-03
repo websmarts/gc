@@ -17,13 +17,18 @@ class Membershiptypes extends Component
     protected $organisation;
     
 
-    protected $rules = [
-        'editing.name' => 'required',
-        'editing.description' => 'required',
-        'editing.max_people' => 'required',
-        'editing.membership_fee_as_dollars' => 'required',
-        
-    ];
+   
+    public function rules()
+    {
+        return [
+            'editing.name' => 'required',
+            'editing.description' => 'required',
+            'editing.max_people' => 'required',
+            'editing.renewal_month' => 'required',
+            'editing.membership_fee_as_dollars' => 'required',
+            
+        ];
+    }
 
     public function mount()
     {

@@ -12,6 +12,7 @@ class Membership extends Model
     use  SoftDeletes;
 
     const STATUSES = [
+
         'pending' => 'Pending approval',
         'active' => 'Active',
         'paused' => 'Paused',
@@ -19,7 +20,6 @@ class Membership extends Model
 
     protected $fillable = [
         'name',
-        'organisation_id',
         'membership_type_id',
         'start_date',
         'fee_due_date',
