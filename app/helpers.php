@@ -23,5 +23,6 @@ function format_cents_to_dollar_display($cents=0)
 
 function selectedOrganisation()
 {
+   
     return auth()->user()->selectedOrganisation();
 }

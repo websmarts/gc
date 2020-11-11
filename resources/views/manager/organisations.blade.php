@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-slot name="pagetitle">Managed Organisations</x-slot>
+    <x-slot name="pagetitle">Organisation list</x-slot>
 
 
     @livewire('organisation-selector')

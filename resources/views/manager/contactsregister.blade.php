@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-slot name="pagetitle">Contacts Register</x-slot>
+    <x-slot name="pagetitle">Contacts register (non-member)</x-slot>
 
     <livewire:contacts-register />
 

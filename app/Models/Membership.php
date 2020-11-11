@@ -22,16 +22,18 @@ class Membership extends Model
         'name',
         'membership_type_id',
         'start_date',
-        'fee_due_date',
-        'fee_due_amount',
+        'last_renewal_sent_date',
+        'last_paid_date',
+        'last_paid_amount',
         'status'
     ];
+
 
     protected $dispatchesEvents = [
         'deleted' => MembershipWasDeleted::class,
     ];
 
-    protected $dates = ['start_date', 'fee_due_date', 'deleted_at'];
+    protected $dates = ['start_date', 'last_renewal_sent_date' , 'last_paid_date', 'deleted_at'];
 
     
     public function getFeeDueAmountForDisplayAttribute()
@@ -46,6 +48,11 @@ class Membership extends Model
     {
         return $this->belongsTo('App\Models\MembershipType');
     }
+
+    // public function primaryContact()
+    // {
+    //     $members = $this->members->
+    // }
 
     public function members()
     {

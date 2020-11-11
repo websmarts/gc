@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-slot name="pagetitle">Membership Members</x-slot>
+    <x-slot name="pagetitle">Membership members</x-slot>
 
     <livewire:membership-members :membershipId="$membership" />
 

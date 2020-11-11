@@ -30,6 +30,7 @@ class Contact extends Authenticatable
         'email',
         'email_verified_at',
         'password',
+        'notes'
         
     ];
 
@@ -54,11 +55,23 @@ class Contact extends Authenticatable
         return 'uuid';
     }
 
-
+    public function listRoles()
+    {
+       return  $this->roles->implode('role',',');
+    }
+    public function listMemberships()
+    {
+        return $this->memberships->implode('name',',');
+    }
     
     public function organisation()
     {
         return $this->belongsTo(Organisation::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(RoleOption::class,'organisation_roles','contact_id','role_id')->withPivot('organisation_id');
     }
 
 

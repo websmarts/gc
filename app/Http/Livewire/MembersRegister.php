@@ -18,25 +18,35 @@ class MembersRegister extends Component
     public $memberships;
     public $membershipTypes;
 
-    public $search ='';
+    public $selected = [];
+    public $selectAll = false;
+
+    public $search = '';
+    public $orderBy = 'name';
+    public $sortOrder = 'asc';
 
     public $editing; // Membership Model
     public $proxy_start_date; // temp holder for editing.start_date
+    public $proxy_last_paid_date; // temp holder for editing.start_date
 
 
 
     public $showEditMembershipModal = false;
     public $showConfirmDeleteMembershipModal = false;
 
-   
+    public $showRenewButton = false;
+
+
 
     public function rules()
     {
         return $rules =  [
-            'editing.name'=>'required',
+            'editing.name' => 'required',
             'editing.membership_type_id' => 'required',
             'proxy_start_date' => ['nullable', new inputdate],
+            'proxy_last_paid_date' => ['nullable', new inputdate],
             'editing.status' => 'required',
+            'editing.last_paid_amount' => 'sometimes',
         ];
     }
 
@@ -45,18 +55,59 @@ class MembersRegister extends Component
         $this->membershipTypes = selectedOrganisation()->membershipTypes;
     }
 
-    public function updated($name,$value)
+    public function orderBy($field)
     {
-        if($name == 'proxy_start_date'){
-            $this->proxy_start_date = str_replace('/','-',$value) ;
-        }  
+        if ($this->orderBy == $field) {
+            $this->sortOrder = $this->sortOrder == 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortOrder = 'asc';
+        }
+        $this->orderBy = $field;
+    }
+
+    public function updatedSelectAll()
+    {
+
+        foreach ($this->memberships as $m) {
+            $this->selected[$m->id] = $this->selectAll;
+        }
+        $this->updatedSelected();
+    }
+
+    public function updatedSelected()
+    {
+        $this->showRenewButton = collect($this->selected)->filter(function ($value) {
+            return $value;
+        })->count();
+    }
+
+    public function updated($name, $value)
+    {
+        if ($name == 'proxy_start_date') {
+            $this->proxy_start_date = str_replace('/', '-', $value);
+        }
+    }
+
+    public function sendRenewals()
+    {
+        $selectedMembershipIds = collect($this->selected)->filter(function ($value) {
+            return $value;
+        })->keys();
+
+        // Update the last_renewal_sent_date for all selected ids.
+        // Another process will actually send the renewal notice on the date set here
+        Membership::whereIn('id', $selectedMembershipIds)
+            ->update([
+                'last_renewal_sent_date' => Carbon::now()
+            ]);
     }
 
     public function edit(Membership $membership)
     {
         $this->editing = $membership;
 
-        $this->proxy_start_date = optional($this->editing->start_date)->format('d-m-Y'); 
+        $this->proxy_start_date = optional($this->editing->start_date)->format('d-m-Y');
+        $this->proxy_last_paid_date = optional($this->editing->last_paid_date)->format('d-m-Y');
         $this->showEditMembershipModal = true;
     }
 
@@ -66,8 +117,9 @@ class MembersRegister extends Component
     public function saveMembership()
     {
         $this->validate();
-        
+
         $this->editing->start_date = new Carbon($this->proxy_start_date); // proxy date must be in dd-mm-yyyy NOT dd/mm/yyyyformat
+        $this->editing->last_paid_date = new Carbon($this->proxy_last_paid_date);
 
         $this->editing->save();
         $this->showEditMembershipModal = false;
@@ -81,19 +133,27 @@ class MembersRegister extends Component
         // Close both modals
         $this->showConfirmDeleteMembershipModal = false;
         $this->showEditMembershipModal = false;
-
     }
-  
+
     public function render()
     {
         $this->memberships = selectedOrganisation()->memberships()
-        ->where('memberships.name','LIKE','%'.$this->search .'%')
-        ->orderBy('name')
-        ->with(['members','membershipType'])
-        ->get();
+            ->where('memberships.name', 'LIKE', '%' . $this->search . '%')
+            ->orderBy($this->orderBy, $this->sortOrder)
+            ->with(['members', 'membershipType'])
+            ->get();
+        // $this->memberships = Membership::join('membership_types','memberships.membership_type_id','=','membership_types.id')
+        // ->where('membership_types.organisation_id',selectedOrganisation()->first()->id)
+        // ->join('contacts_memberships','memberships.id','=','contacts_memberships.membership_id')
+        // ->join('contacts','contacts_memberships.contact_id','=','contacts.id')
+        // ->select(
+        //     'memberships.*',
+        //     'membership_types.name as membership_type_name',
+        //     'contacts_memberships.is_primary_contact',
+        //     'contacts.name as contact_name')
+        // ->get();
+        // dd($this->memberships->first()->toArray());
 
-        
-       
         return view('livewire.members-register');
     }
 }

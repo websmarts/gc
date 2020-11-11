@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-slot name="pagetitle">The Members Register</x-slot>
+    <x-slot name="pagetitle">Membership register</x-slot>
 
     <livewire:members-register />
 

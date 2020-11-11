@@ -11,6 +11,7 @@ use App\Http\Controllers\MembersImportController;
 use App\Http\Controllers\UpdateManagerController;
 use App\Http\Controllers\ViewInspectorController;
 use App\Http\Controllers\OrganisationSetController;
+use App\Http\Controllers\MembershipRenewalController;
 use App\Http\Controllers\OrganisationProfileController;
 use App\Http\Controllers\OrganisationSelectorController;
 
@@ -65,7 +66,11 @@ Route::middleware(['guest:contact,web'])->get('/', function () {
 // })->name('register.setup.account');
 
 
-
+// TODO add a get logout url
+Route::get('logout',function(){
+    auth()->logout();
+    return redirect('/');
+});
 
 
 /**
@@ -86,36 +91,50 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
     //      * the correct dashboard to display for the user.
     //      */
 
-    // TODO add a get logout url
+    
 
     Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('organisation/register', function () {
+        // Register an Organisation
+        Route::get('register-organisation', function () {
             return view('manager.organisation-register');
         })->name('organisation.register');
 
+        // Manage MembershipTypes for the selected Organisation
         Route::get('membershiptypes', function () {
             return view('manager.membershiptypes');
         })->name('membershiptypes');
 
-        Route::get('membersregister', function () {
+        // Members Register for the selected Organisation
+        Route::get('members-register', function () {
             return view('manager.membersregister');
         })->name('members.register');
 
-        Route::get('createmembership', function () {
+        // Create a Membership for the selected Organisation
+        Route::get('create-membership', function () {
             return view('manager.create-membership');
         })->name('create.membership');
 
+        // Manage a Memberships members
         Route::get('membership/{membership}/members', function ($membership) {
-
             return view('manager.membership-members')->with('membership', $membership);
         })->name('membership.members');
 
-        Route::get('contactssregister', function () {
+        
+        // Manage the contacts register for the selected Organisation
+        Route::get('contacts-register', function () {
             return view('manager.contactsregister');
         })->name('contacts.register');
+
+        // Manage the settings for the selected Organisation
+        Route::get('organisation-settings', function () {
+            return view('manager.organisation-settings');
+        })->name('organisation.settings');
+
+
+
 
         Route::get('/organisation/{organisation}/edit', [OrganisationProfileController::class, 'edit'])->name('organisation.profile.edit');
 
@@ -125,6 +144,24 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
          */
         Route::get('uploadfile', [MembersImportController::class, 'index']);
         Route::post('uploadfile', [MembersImportController::class, 'import']);
+
+        /**
+         * Experimental code for processing organisation membership renewal notices
+         */
+        Route::get('renewals',function() {
+            $m = selectedOrganisation()->memberships->first();
+            $primaryContact = $m->members->where('pivot.is_primary_contact',true)->first();
+
+            $details = [
+                'email'=> $primaryContact->email,
+                'organisation_name'=>"Neerim and District Landcare Group",
+                'primary_contact' => $primaryContact->name,
+                'membership_name'=>$m->name,
+                'subscription_period_end_date' => '1-'.$m->membershipType->renewal_month.'-'.date('Y'),
+                ];
+            return new App\Mail\MembershipRenewal($details);
+
+        });
     });
 });
 

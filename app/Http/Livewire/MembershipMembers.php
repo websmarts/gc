@@ -70,7 +70,6 @@ class MembershipMembers extends Component
             $this->editing->uuid = Str::uuid();
             $this->editing->save();
 
-            // TODO Attach new member to membership WITH is_primary_contact bit set correctly!!!!
             $this->membership->members()->attach($this->editing->id, ['is_primary_contact' => $this->is_primary_contact]);
         } else {
             // we edited an existing member

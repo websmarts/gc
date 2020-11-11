@@ -57,7 +57,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function selectedOrganisation()
     {
-        return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+       if(! is_null($this->last_selected_organisation_uuid)) {
+           return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+       }
+
+       $this->last_selected_organisation_uuid = $this->organisations->first()->uuid;
+       $this->save();
+       return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+
     }
    
     /**

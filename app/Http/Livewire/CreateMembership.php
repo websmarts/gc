@@ -58,7 +58,7 @@ class CreateMembership extends Component
 
         $this->membership->refresh()->members()->attach($this->contact->refresh(),['is_primary_contact'=> true]);
 
-
+        return redirect()->route('members.register');
     }
    
     public function render()

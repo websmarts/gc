@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,12 +21,22 @@ class MembershipType extends Model
         'membership_fee',
         'renewal_month',
 
-
     ];
 
     protected $dates = ['deleted_at'];
 
-    
+    public function current_subscription_start_date()
+    {
+        $now = Carbon::now();
+        $nowMonth = $now->month;
+        $nowYear = $now->year;
+
+        if($nowMonth >= $this->renewal_month){
+            // Start was last year
+            return new Carbon('01-'.$this->renewal_month.'-'.--$nowYear);
+        }
+        return new Carbon('01-'.$this->renewal_month.'-'.$nowYear);
+    }
 
     /**
      * Accessor so we can use dollars (not cents) for display and editing

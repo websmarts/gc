@@ -41,7 +41,7 @@ class MembersImportController extends Controller
                     if (!$data['membership_name']) {
                         return;
                     }
-                    echo 'primary contact '.$data['contact_name'].'-----------------<br />';
+                    // echo 'primary contact '.$data['contact_name'].'-----------------<br />';
                     // Create Membership
                     $membership = Membership::create([
                         'membership_type_id' => 2,
@@ -74,7 +74,7 @@ class MembersImportController extends Controller
 
                     // Add any remaining members from other items
                     $items->each(function ($data, $key) use ($membership) {
-                        echo $data['contact_name'].'<br />';
+                        //echo $data['contact_name'].'<br />';
                         $addressId=null;
                         if (!empty($data['address1'])) {
                             $address = Address::create([
@@ -103,22 +103,7 @@ class MembersImportController extends Controller
                 });
             });
 
-
-            // loop through
-
-            // exclude invalid rows
-
-            // extract and transform valid rows into contacts within membership groups
-
-            // split up obvious records into multiple contacts eg a & B smith into A Smith and B Smith records
-
-            // loop through membership groups and
-            // create membership of appropriate type
-            // and add contacts linked to each membership
-
-
-            // redirect to a page that displays the groups contacts/memberships
-            echo 'done';
+            return redirect('/dashboard');
 
         } else {
              dd('request does not have valid file ');

@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-slot name="pagetitle">Membership Options</x-slot>
+    <x-slot name="pagetitle">Membership options</x-slot>
 
     <livewire:membershiptypes />
 

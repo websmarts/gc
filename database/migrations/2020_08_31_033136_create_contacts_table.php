@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Contacts extends Migration
+class CreateContactsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -21,6 +21,7 @@ class Contacts extends Migration
             $table->unsignedBigInteger('address_id')->nullable();  
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->text('notes')->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

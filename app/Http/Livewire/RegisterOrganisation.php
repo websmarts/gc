@@ -18,6 +18,7 @@ class RegisterOrganisation extends Component
         'organisation.name' => 'required',
         'organisation.abn' => 'required',
         'organisation.gst_registered' => 'required',
+        'organisation.phone'=>'required',
         'address.address1' => 'required',
         'address.address2' => 'nullable',
         'address.city' => 'required',
@@ -42,6 +43,7 @@ class RegisterOrganisation extends Component
 
         $data['organisation']['address_id'] = $address->id;
         $data['organisation']['uuid'] = (string) Str::uuid();
+        $data['organisation']['slug'] = Str::slug($data['organisation']['name']);
         $organisation = Organisation::create($data['organisation']);
 
         auth()->user()->organisations()->attach($organisation);

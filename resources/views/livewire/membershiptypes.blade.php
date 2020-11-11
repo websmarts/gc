@@ -3,8 +3,8 @@
 
 
     <div class="p-2 text-right">
-        <x-button.primary wire:click="add">
-            <x-icon.plus />Membership option</x-button.secondary>
+        <x-button.link wire:click="add">
+            <x-icon.plus />Membership option</x-button.link>
     </div>
     <x-table>
         <x-slot name="head">
@@ -54,7 +54,7 @@
                     <x-input.error for="editing.description" />
                 </x-input.group>
 
-                <x-input.group for="max_people" label="Max number of people">
+                <x-input.group for="max_people" label="Max number of members">
                     <x-input.text id="max_people" wire:model.defer='editing.max_people'></x-input.text>
                     <x-input.error for="editing.max_people" />
                 </x-input.group>

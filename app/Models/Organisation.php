@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Settings;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Membership;
 use App\Models\MembershipType;
+use App\Models\OrganisationRole;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,6 +16,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Organisation extends Model
 {
     use HasFactory, SoftDeletes;
+
+    const SETTING_OPTIONS = [
+        'payment_handler' => ['manual'],// Paypal,Stripe      
+    ];
     
     protected $fillable = [
         
@@ -24,9 +30,15 @@ class Organisation extends Model
            'phone',
            'uuid',
            'slug',
+           'settings',
     ];
 
     protected $dates = ['deleted_at'];
+
+    protected $casts = [ 'settings' => 'json'];
+    protected $allowedSettings = ['payment_handler','STRIPE_PUBLISH_KEY','STRIPE_SECRET_KEY'];
+
+    
 
     /**
      * Lets route model binding to use uuid
@@ -34,6 +46,14 @@ class Organisation extends Model
     public function getRouteKeyName()
     {
         return 'uuid';
+    }
+
+    /**
+     * Support for storing settings as JSON in settings attribute
+     */
+    public function settings()
+    {
+        return new Settings($this,$this->allowedSettings);
     }
 
     /**
@@ -62,6 +82,11 @@ class Organisation extends Model
     public function memberships()
     {
         return $this->hasManyThrough(Membership::class,MembershipType::class);
+    }
+
+    public function roleOptions()
+    {
+        return $this->belongsToMany(RoleOption::class,'organisation_roles','organisation_id','role_id')->withPivot('contact_id');
     }
 
    public function members($primary_contacts_only = false)

@@ -41,8 +41,9 @@ class MembershipSeeder extends Seeder
                             'membership_type_id' => $type->id,
                             'name' => 'membership name',
                             'start_date' => $faker->date(),
-                            'fee_due_date' => $faker->date(),
-                            'fee_due_amount' => 2100,
+                            'last_renewal_sent_date' => $faker->date(),
+                            'last_paid_date' => $faker->date(),
+                            'last_paid_amount' => null,
                             'status' => 'active'
                         ]
                     );
