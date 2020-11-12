@@ -5,6 +5,7 @@ use App\Models\Organisation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Jobs\SendMembershipRenewalEmail;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpersonatorController;
 use App\Http\Controllers\MembersImportController;
@@ -29,7 +30,7 @@ use App\Http\Controllers\OrganisationSelectorController;
 Route::get('/view-inspector', [ViewInspectorController::class, 'index']);
 
 /**
- * Members moving to groupcare register here
+ * EXPERIMENTAL Members moving to groupcare register here
  */
 Route::get('member/registration/for/{slug}',function($slug){
     $organisation = Organisation::where('slug',$slug)->firstOrFail();
@@ -135,7 +136,7 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
 
 
 
-
+        // Edit organisation propile
         Route::get('/organisation/{organisation}/edit', [OrganisationProfileController::class, 'edit'])->name('organisation.profile.edit');
 
 
@@ -159,8 +160,14 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
                 'membership_name'=>$m->name,
                 'subscription_period_end_date' => '1-'.$m->membershipType->renewal_month.'-'.date('Y'),
                 ];
-            return new App\Mail\MembershipRenewal($details);
+            //return new App\Mail\MembershipRenewal($details);
 
+            dispatch(new SendMembershipRenewalEmail($details));
+
+        });
+
+        Route::get('renew/{membershipKey}', function($membershipKey){
+            dd($membershipKey);
         });
     });
 });

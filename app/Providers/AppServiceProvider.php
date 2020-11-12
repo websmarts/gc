@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
