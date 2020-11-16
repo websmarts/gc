@@ -1,11 +1,13 @@
 <?php
 
 use App\Models\User;
+use App\Models\Membership;
 use App\Models\Organisation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Jobs\SendMembershipRenewalEmail;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpersonatorController;
 use App\Http\Controllers\MembersImportController;
@@ -72,6 +74,53 @@ Route::get('logout',function(){
     auth()->logout();
     return redirect('/');
 });
+
+Route::get('renew/{membershipIdHash?}', function($membershipIdHash = false){
+   
+    if(!$membershipIdHash){
+        return view('membership.renewal-form-anonymous'); // no membership identifier in request
+    }
+
+    $hasher = app('hasher')->decode($membershipIdHash);
+   
+    if(empty($hasher)){
+        dd('invalid hash supplied');
+    }
+    $membership = Membership::findOrFail($hasher[0]);
+    
+    // TODO check if hashId has expiry attached and if expired or not
+    //[id, time_has_was_made, expiry_hours]
+
+    
+    return view('membership.renewal-form',compact('membership'));
+
+
+})->name('membership-renewal');
+
+Route::get('cancel-membership/{membership}',function($membership){
+    $membership = Membership::findOrFail(app()->hasher->decode($membership));
+    // Set membership status to pending-deleteion confirmation
+
+    // Fire membership canceled event - emails primary contact a confirmation email
+
+    return view('membership.cancel-confirm');
+
+})->name('cancel-membership');
+
+//Paypaldev stuff
+Route::post('membership-renewal-payment/{membership}',[PayPalController::class, 'membershipRenewalPayment'])->name('membership-renewal-payment');
+Route::post('capture-paypal-transaction',[PayPalController::class, 'capture'])->name('capture-paypal-transaction');
+//Route::get('get-paypal-transaction',[PayPalController::class, 'get'])->name('get-paypal-transaction');
+Route::get('paypal-return',[PayPalController::class, 'paypalReturn'])->name('paypal-return');
+Route::get('paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel');
+
+/**
+ * Single Sign On or Contact guarded route group
+ * TODO add middleware and routes
+ */
+// Handle contact request to cancel membership
+
+// Handle contact request to update profile/preferences
 
 
 /**
@@ -155,20 +204,21 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
 
             $details = [
                 'email'=> $primaryContact->email,
+                'membership_id_hash' => app('hasher')->encode([$m->id, time(),24]),
                 'organisation_name'=>"Neerim and District Landcare Group",
                 'primary_contact' => $primaryContact->name,
                 'membership_name'=>$m->name,
                 'subscription_period_end_date' => '1-'.$m->membershipType->renewal_month.'-'.date('Y'),
                 ];
-            //return new App\Mail\MembershipRenewal($details);
 
-            dispatch(new SendMembershipRenewalEmail($details));
+
+            // return new App\Mail\MembershipRenewal($details);
+
+           dispatch(new SendMembershipRenewalEmail($details));
 
         });
 
-        Route::get('renew/{membershipKey}', function($membershipKey){
-            dd($membershipKey);
-        });
+       
     });
 });
 

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <!-- Scripts -->
+    <script src="{{ mix('/js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.0/dist/alpine.js" defer></script>
 </head>
 
@@ -38,13 +39,14 @@
         <div class="hidden sm:flex justify-center items-strech space-x-4 pt-2 pb-2 mt-8 w-1/3">
             <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
             <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>    
+            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
         </div>
 
 
         <div class="flex items-center space-x-4 pr-4">
             <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('login') }}">Login</a>
             <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
+            <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('membership-renewal') }}">Renew membership</a>
         </div>
     </div><!-- end static header -->
 
@@ -53,12 +55,24 @@
         <div class="flex sm:hidden justify-center items-strech space-x-4  mt-4 w-full">
             <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
             <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>           
+            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
         </div>
     </div>
 
 
+
+
+
+
     <div class="font-sans text-gray-900 antialiased py-4">
+        <x-flash-messages />
+
+        @if( isSet($pagetitle) && !empty($pagetitle))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <h1 class="text-2xl font-semibold text-gray-900">{{ $pagetitle ?? '' }}</h1>
+        </div>
+        @endif
+
         {{ $slot }}
     </div>
 </body>

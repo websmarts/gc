@@ -26,11 +26,12 @@ class OrganisationSeeder extends Seeder
             'address_id' => Address::factory(1)->create()->first()->id,
             'gst_registered' => 1,
             'abn' => '98765456778',
-            'phone' => '',
+            'phone' => '56567788',
+            'bank_account_details'=>'branch 006633 acct #1234567',
         ])->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
 
         
-        for($n = 0; $n <20; $n++){
+        for($n = 0; $n <10; $n++){
             Organisation::factory(1)
             ->create(['address_id'=>Address::factory(1)->create()->first()->id])
             ->first()

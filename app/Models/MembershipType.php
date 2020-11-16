@@ -58,4 +58,9 @@ class MembershipType extends Model
     {
         return $this->hasMany('App\Models\Membership');
     }
+
+    public function organisation()
+    {
+        return $this->belongsTo('App\Models\Organisation');
+    }
 }

@@ -21,8 +21,19 @@ function format_cents_to_dollar_display($cents=0)
     return $cents !=0 ? '$'.number_format($cents/100,2) : 0 ;
 }
 
+/**
+ * Main function used to detect the currently selecetd organisation
+ */
 function selectedOrganisation()
-{
-   
+{ 
     return auth()->user()->selectedOrganisation();
+}
+
+/**
+ * Returns the id from a Hashid if hash is valid, otherwise false
+ */
+function getIdFromHashId($hashid)
+{
+    $resArry =app()->hasher->decode($hashid);
+    return isSet($resArry[0]) ? $resArry[0] : false;
 }

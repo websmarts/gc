@@ -28,6 +28,7 @@ class Organisation extends Model
            'gst_registered',
            'address_id',
            'phone',
+           'bank_account_details',
            'uuid',
            'slug',
            'settings',

@@ -22,6 +22,7 @@ class CreateOrganisationsTable extends Migration
             $table->boolean('gst_registered')->nullable();
             $table->unsignedBigInteger('address_id');
             $table->string('phone')->nullable();
+            $table->string('bank_account_details')->nullable();
             $table->text('settings')->nullable();
 
             $table->softDeletes();

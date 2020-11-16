@@ -3,7 +3,7 @@
     
         
         <span class="block  text-center mt-1 text-lg leading-tight font-semibold text-gray-600 hover:underline">
-     ... supporting community organisations by helping volunteers manage them with less risk, 
+     ... helping community organisations manage with less risk, 
          less stress and less effort.</span>
 
 

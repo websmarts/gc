@@ -41,6 +41,11 @@ class Membership extends Model
         return $this->fee_due_amount != 0 ? number_format($this->fee_due_amount / 100, 2) : 0;
     }
 
+    public function getIdHashAttribute()
+    {
+        return app()->hasher->encode($this->id);
+    }
+
     /**
      * Relationships
      */
