@@ -6,16 +6,22 @@
         </div>
 
 
+
+
+        <div x-data="{ show: @entangle('showRenewButton') }" x-show='show'>
+            <div wire:loading.remove>
+                <x-button.primary wire:click.prevent=" sendRenewals()">Send ({{ $this->renewalCount }}) Membership Renewal Emails</x-button.primary>
+            </div>
+        </div>
+
         <div class="p-2 text-right">
             <a href="{{ route('create.membership') }}">
                 <x-icon.plus />Add membership</a>
         </div>
 
-        <div x-data="{ show: @entangle('showRenewButton') }" x-show='show' ">
-            <x-button.primary wire:click.prevent=" sendRenewals()">Send ({{ $showRenewButton }}) Membership Renewal Emails</x-button.primary>
 
-        </div>
     </div>
+
 
     <x-table>
         <x-slot name="head">
@@ -32,11 +38,14 @@
             <x-table.heading class="text-left">Renewal status</x-table.heading>
 
             <x-table.heading class="text-left">
+                @if($this->organisation->hasRenewableMemberships())
                 Select
-                <div class="flex">
+                <div>
                     <x-input.checkbox wire:model="selectAll" />
                     <div class="normal-case ml-1">all</div>
                 </div>
+                @endif
+
             </x-table.heading>
             <x-table.heading />
 
@@ -46,13 +55,13 @@
 
             @forelse($memberships as $membership)
 
-            <x-table.row wire:loading.class="opacity-50">
+            <x-table.row wire:loading.class="opacity-50" wire:key="{{ $loop->index }}">
 
                 <x-table.cell>{{ $membership->name }}</x-table.cell>
                 <x-table.cell>{{ $membership->membershipType->name }}</x-table.cell>
                 <x-table.cell>{{ App\Models\Membership::STATUSES[$membership->status] }}</x-table.cell>
                 <x-table.cell><a href="{{ route('membership.members',['membership'=> $membership->id])}}">{{ $membership->members->count() }} view</a></x-table.cell>
-               
+
                 <x-table.cell>
 
 
@@ -70,9 +79,9 @@
                 <x-table.cell>
 
                     @if(!$membership->latestRenewalPayment())
-                    {{ $membership->membershipType->currentSubscriptionPeriod()->start_date->diffInDays() }} days past due
+                    {{ $membership->membershipType->daysIntoSubscription() }} days late
 
-                    @elseif( $membership->latestRenewalPayment()->when_received->greaterThan($membership->membershipType->currentSubscriptionPeriod()->start_date->addDays(-$membership->membershipType->grace_period_days)))
+                    @elseif( $membership->isCurrentlyFinancial() )
                     current
                     @endif
 
@@ -80,11 +89,14 @@
                 </x-table.cell>
 
                 <x-table.cell>
+                    @if($membership->isRenewable())
                     <x-input.checkbox wire:model="selected.{{ $membership->id }}" />
+                    @endif
 
                 </x-table.cell>
 
                 <x-table.cell class="w/12 text-right">
+
                     <x-button.link class="hover:underline" wire:click="edit({{ $membership->id }})">edit</x-button.link>
                 </x-table.cell>
 

@@ -59,8 +59,8 @@ class Membership extends Model
 
     public function renewalTransactions()
     {
-        return $this->hasMany('App\Models\Transaction','membership_id','id')
-        ->where(['regarding'=>'membership renewal','type'=>'income']);
+        return $this->hasMany('App\Models\Transaction', 'membership_id', 'id')
+            ->where(['regarding' => 'membership renewal', 'type' => 'income']);
     }
 
     /**
@@ -68,17 +68,47 @@ class Membership extends Model
      */
     public function primaryContact()
     {
-        return $this->members->where('pivot.is_primary_contact',true)->first();
+        return $this->members->where('pivot.is_primary_contact', true)->first();
     }
 
     public function latestRenewalPayment()
     {
-       return $this->renewalTransactions()->orderBy('when_received','desc')->first();
+        return $this->renewalTransactions()->orderBy('when_received', 'desc')->first();
     }
-    
+
+
     public function latestRenewalNotice()
     {
         // return the date of the latest renewal transaction created_at date
-        return $this->renewals()->orderBy('issued_date','desc')->first();
+        return $this->renewals()->orderBy('issued_date', 'desc')->first();
+    }
+
+    public function hasBeenSentRenewal()
+    {
+        if(! $this->latestRenewalNotice()) return false;
+        
+        return $this->latestRenewalNotice()->issued_date->greaterThan($this->membershipType->renewalPaymentStartDate());
+    }
+
+    public function isCurrentlyFinancial()
+    {
+        if (!$this->latestRenewalPayment()) {
+            return false;
+        }
+
+        return  $this->latestRenewalPayment()->when_received
+            ->greaterThan($this->membershipType->renewalPaymentStartDate());
+    }
+
+    /**
+     * returns true if membership is renewable
+     */
+    public function isRenewable()
+    {
+       return  $this->status === 'active' && ! $this->isCurrentlyFinancial() && ! $this->hasBeenSentRenewal();
+    }
+    public function isNotRenewable()
+    {
+        return ! $this->isRenewable();
     }
 }

@@ -10,12 +10,11 @@ use App\Events\MembershipDeleted;
 use App\Models\Contact as Member;
 use App\Models\ContactMembership;
 use App\Jobs\SendMembershipRenewalEmail;
-
-
-
+use App\Models\MembershipRenewal;
 
 class MembersRegister extends Component
 {
+    
     public $memberships;
     public $membershipTypes;
 
@@ -36,6 +35,7 @@ class MembersRegister extends Component
     public $showConfirmDeleteMembershipModal = false;
 
     public $showRenewButton = false;
+    public $showSelectAll = 0;
 
 
 
@@ -53,6 +53,7 @@ class MembersRegister extends Component
 
     public function mount()
     {
+        
         $this->membershipTypes = selectedOrganisation()->membershipTypes;
     }
 
@@ -70,9 +71,13 @@ class MembersRegister extends Component
     {
 
         foreach ($this->memberships as $m) {
-            $this->selected[$m->id] = $this->selectAll;
+            if($m->isRenewable()){
+                $this->selected[$m->id] = $this->selectAll;
+            } elseif (isSet($this->selected[$m->id])) {
+                 unset($this->selected[$m->id]);
+            }
         }
-        $this->updatedSelected('all');
+        $this->updatedSelected('all'); // pass all to flag it is the selecteAll causing the update and not a single checkbox
     }
 
     public function updatedSelected($field = null)
@@ -82,9 +87,32 @@ class MembersRegister extends Component
             $this->selectAll = false; // uncheck the select-all checkbox
         }
 
+        // $this->showRenewButton = collect($this->selected)->filter(function ($value) {
+        //     return $value;
+        // })->count();
+    }
+
+    public function getOrganisationProperty()
+    {
+        return selectedOrganisation();
+    }
+
+    public function getCheckboxCountProperty()
+    {
+        
+         $this->showSelectAll = count($this->selected);
+         return $this->showSelectAll;      
+
+    }
+
+    public function getRenewalCountProperty()
+    {
+        
         $this->showRenewButton = collect($this->selected)->filter(function ($value) {
             return $value;
         })->count();
+        
+        return $this->showRenewButton;
     }
 
     public function updated($name, $value)
@@ -102,12 +130,23 @@ class MembersRegister extends Component
 
         // process each selected renewal
         $selectedMembershipIds->each(function ($mid, $key) {
+
             $m = Membership::find($mid);
-            $m->update([
-                'last_renewal_sent_date' => Carbon::now(),
+
+            unset($this->selected[$mid]);
+
+            if( $m->isNotRenewable() ){ // skip if should not be sent renewal
+                return;
+            }
+
+            // Create the renewal request record
+            MembershipRenewal::create([
+                'membership_id' => $m->id,
+                'issued_date' => Carbon::now(),
             ]);
 
-
+           
+            // Prepare the email data
             $primaryContact = $m->members->where('pivot.is_primary_contact', true)->first();
             $details = [
                 'email' => $primaryContact->email,
