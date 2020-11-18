@@ -12,11 +12,12 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', // eg payment request, refund, adjustment, etc
-        'regarding', // eg membership renewal
-        'reference_id', // eg hashId of membership
+        'type', // eg income, refund, adjustment, etc
+        'regarding', // eg [membership/account] renewal
+        'membership_id', // eg membership_id
+        'organisation_id', // organisation_id
         'gross_amount_charged', // gross invoice amount
-        'transaction_id', // payment gateway transaction id
+        'processors_transaction_id', // payment gateway transaction id
         'response_status_code', // eg 201 = all good
         'payee_name',
         'gross_amount_paid', // the amount actuall charged to the payee
@@ -26,5 +27,5 @@ class Transaction extends Model
         'note', // eg why adjustment was made
     ];
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','when_received'];
 }

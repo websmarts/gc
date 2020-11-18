@@ -27,6 +27,7 @@ class DeleteMembershipContacts
      */
     public function handle( MembershipWasDeleted $event)
     {
-        // TODO delete Membership contacts when membership Model deleted 
+        // TODO maybe delete Membership contacts when membership Model deleted 
+        // delete membership  transactions, renewal_notices etc
     }
 }

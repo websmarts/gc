@@ -26,17 +26,19 @@
             <x-table.heading class="text-left">Type</x-table.heading>
             <x-table.heading class="text-left">Status</x-table.heading>
             <x-table.heading class="text-left"># Members</x-table.heading>
-            <x-table.heading class="text-left">Last paid</x-table-heading>
-                <x-table.heading class="text-left">Renewal sent</x-table-heading>
 
-                    <x-table.heading class="text-left">
-                        Select
-                        <div class="flex">
-                            <x-input.checkbox wire:model="selectAll" />
-                            <div class="normal-case ml-1">all</div>
-                        </div>
-                        </x-table-heading>
-                        <x-table.heading />
+            <x-table.heading class="text-left">Renewal sent</x-table.heading>
+            <x-table.heading class="text-left">Last renewed</x-table.heading>
+            <x-table.heading class="text-left">Renewal status</x-table.heading>
+
+            <x-table.heading class="text-left">
+                Select
+                <div class="flex">
+                    <x-input.checkbox wire:model="selectAll" />
+                    <div class="normal-case ml-1">all</div>
+                </div>
+            </x-table.heading>
+            <x-table.heading />
 
         </x-slot>
 
@@ -50,14 +52,30 @@
                 <x-table.cell>{{ $membership->membershipType->name }}</x-table.cell>
                 <x-table.cell>{{ App\Models\Membership::STATUSES[$membership->status] }}</x-table.cell>
                 <x-table.cell><a href="{{ route('membership.members',['membership'=> $membership->id])}}">{{ $membership->members->count() }} view</a></x-table.cell>
-                <x-table.cell>{{ optional($membership->last_paid_date)->format('d-m-Y') }}</x-table.cell>
+               
                 <x-table.cell>
-                    <div class="{{$membership->membershipType->current_subscription_start_date()->lessThan($membership->last_renewal_sent_date) 
-                        ? 'font-black' : 'font-normal text-red-800'}}">
 
 
-                        {{ optional($membership->last_renewal_sent_date)->format('d-m-Y') }}
-                    </div>
+                    @if($membership->latestRenewalNotice())
+                    {{ $membership->latestRenewalNotice()->issued_date->tz('Australia/Melbourne')->format('d-m-Y') }}
+                    @endif
+
+                </x-table.cell>
+                <x-table.cell>
+                    @if($membership->latestRenewalPayment())
+                    {{ $membership->latestRenewalPayment()->when_received->timezone('Australia/Melbourne')->format('d-m-Y') }}
+                    @endif
+
+                </x-table.cell>
+                <x-table.cell>
+
+                    @if(!$membership->latestRenewalPayment())
+                    {{ $membership->membershipType->currentSubscriptionPeriod()->start_date->diffInDays() }} days past due
+
+                    @elseif( $membership->latestRenewalPayment()->when_received->greaterThan($membership->membershipType->currentSubscriptionPeriod()->start_date->addDays(-$membership->membershipType->grace_period_days)))
+                    current
+                    @endif
+
 
                 </x-table.cell>
 
@@ -116,13 +134,7 @@
                     <x-input.text id="start_date" wire:model.defer='proxy_start_date'></x-input.text>
                 </x-input.group>
 
-                <x-input.group for="last_paid_date" label="Last paid date" :error="$errors->first('proxy_last_paid_date')">
-                    <x-input.text id="last_paid_date" wire:model.defer='proxy_last_paid_date'></x-input.text>
-                </x-input.group>
 
-                <x-input.group for="last_paid_amount" label="Last paid amount" :error="$errors->first('editing.last_paid_amount')">
-                    <x-input.text id="last_paid_amount" wire:model.defer='editing.last_paid_amount'></x-input.text>
-                </x-input.group>
 
 
             </x-slot>

@@ -31,11 +31,21 @@ class MembershipType extends Model
         $nowMonth = $now->month;
         $nowYear = $now->year;
 
+        
+
         if($nowMonth >= $this->renewal_month){
             // Start was last year
-            return new Carbon('01-'.$this->renewal_month.'-'.--$nowYear);
+            return new Carbon('01-'.$this->renewal_month.'-'.$nowYear);
         }
-        return new Carbon('01-'.$this->renewal_month.'-'.$nowYear);
+        return new Carbon('01-'.$this->renewal_month.'-'.--$nowYear);
+    }
+
+    public function currentSubscriptionPeriod()
+    {
+        return (object) [
+            'start_date'=> $this->current_subscription_start_date(),
+            'end_date' => $this->current_subscription_start_date()->addYear(),
+        ];
     }
 
     /**
@@ -52,6 +62,7 @@ class MembershipType extends Model
     {
         $this->membership_fee = $value * 100;
     }
+
 
 
     public function memberships()

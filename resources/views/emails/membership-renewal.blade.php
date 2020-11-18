@@ -38,7 +38,7 @@
                                                                     <p>Just letting you know that the {{ $details['membership_name'] }} membership with {{ $details['organisation_name'] }} will expire {{ $details['subscription_period_end_date'] }}</p>
 
                                                                     <p style="line-height:2em; text-align: center">To renew your membership please<br> 
-                                                                    <a style="font-size:110%" href="{{ route('renewal',['membershipIdHash'=>$details['membership_id_hash']]) }}">visit our subscription renewal page</a> <br>
+                                                                    <a style="font-size:110%" href="{{ route('membership-renewal',['membershipIdHash'=>$details['membership_id_hash']]) }}">visit our subscription renewal page</a> <br>
                                                                     </p>
 
 

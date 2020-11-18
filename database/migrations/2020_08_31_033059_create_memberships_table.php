@@ -18,8 +18,8 @@ class CreateMembershipsTable extends Migration
             $table->unsignedBiginteger('membership_type_id');
             $table->string('name');
             $table->date('start_date')->nullable();
-            $table->date('last_renewal_sent_date')->nullable();
-            $table->date('last_paid_date')->nullable();
+            $table->dateTime('last_renewal_sent_date')->nullable();
+            $table->dateTime('last_paid_date')->nullable();
             $table->integer('last_paid_amount')->nullable();
             $table->string('status')->nullable();
             $table->softDeletes();

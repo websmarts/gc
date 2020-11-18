@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Contact;
 use Livewire\Component;
 use App\Models\Membership;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CreateMembership extends Component
@@ -52,6 +53,7 @@ class CreateMembership extends Component
         
 
         DB::transaction(function(){
+            $this->membership->start_date = Carbon::now();
             $this->membership->save();
             $this->contact->save();
         });

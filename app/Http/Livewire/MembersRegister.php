@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use App\Events\MembershipDeleted;
 use App\Models\Contact as Member;
 use App\Models\ContactMembership;
+use App\Jobs\SendMembershipRenewalEmail;
 
 
 
@@ -27,7 +28,7 @@ class MembersRegister extends Component
 
     public $editing; // Membership Model
     public $proxy_start_date; // temp holder for editing.start_date
-    public $proxy_last_paid_date; // temp holder for editing.start_date
+    // public $proxy_last_paid_date; // temp holder for editing.start_date
 
 
 
@@ -44,7 +45,7 @@ class MembersRegister extends Component
             'editing.name' => 'required',
             'editing.membership_type_id' => 'required',
             'proxy_start_date' => ['nullable', new inputdate],
-            'proxy_last_paid_date' => ['nullable', new inputdate],
+            // 'proxy_last_paid_date' => ['nullable', new inputdate],
             'editing.status' => 'required',
             'editing.last_paid_amount' => 'sometimes',
         ];
@@ -71,11 +72,16 @@ class MembersRegister extends Component
         foreach ($this->memberships as $m) {
             $this->selected[$m->id] = $this->selectAll;
         }
-        $this->updatedSelected();
+        $this->updatedSelected('all');
     }
 
-    public function updatedSelected()
+    public function updatedSelected($field = null)
     {
+
+        if ($field != 'all') { // single checkbox clicked
+            $this->selectAll = false; // uncheck the select-all checkbox
+        }
+
         $this->showRenewButton = collect($this->selected)->filter(function ($value) {
             return $value;
         })->count();
@@ -94,20 +100,36 @@ class MembersRegister extends Component
             return $value;
         })->keys();
 
-        // Update the last_renewal_sent_date for all selected ids.
-        // Another process will actually send the renewal notice on the date set here
-        Membership::whereIn('id', $selectedMembershipIds)
-            ->update([
-                'last_renewal_sent_date' => Carbon::now()
+        // process each selected renewal
+        $selectedMembershipIds->each(function ($mid, $key) {
+            $m = Membership::find($mid);
+            $m->update([
+                'last_renewal_sent_date' => Carbon::now(),
             ]);
+
+
+            $primaryContact = $m->members->where('pivot.is_primary_contact', true)->first();
+            $details = [
+                'email' => $primaryContact->email,
+                'membership_id_hash' => app('hasher')->encode([$m->id, time(), 24]),
+                'organisation_name' => "Neerim and District Landcare Group",
+                'primary_contact' => $primaryContact->name,
+                'membership_name' => $m->name,
+                'subscription_period_end_date' => '1-' . $m->membershipType->renewal_month . '-' . date('Y'),
+            ];
+
+            dispatch(new SendMembershipRenewalEmail($details));
+        });
     }
+
+
 
     public function edit(Membership $membership)
     {
         $this->editing = $membership;
 
         $this->proxy_start_date = optional($this->editing->start_date)->format('d-m-Y');
-        $this->proxy_last_paid_date = optional($this->editing->last_paid_date)->format('d-m-Y');
+        // $this->proxy_last_paid_date = optional($this->editing->last_paid_date)->format('d-m-Y');
         $this->showEditMembershipModal = true;
     }
 
@@ -119,7 +141,7 @@ class MembersRegister extends Component
         $this->validate();
 
         $this->editing->start_date = new Carbon($this->proxy_start_date); // proxy date must be in dd-mm-yyyy NOT dd/mm/yyyyformat
-        $this->editing->last_paid_date = new Carbon($this->proxy_last_paid_date);
+        // $this->editing->last_paid_date = new Carbon($this->proxy_last_paid_date);
 
         $this->editing->save();
         $this->showEditMembershipModal = false;

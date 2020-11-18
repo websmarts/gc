@@ -24,5 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OrganisationMembershipTypeSeeder::class);
         $this->call(MembershipSeeder::class);
         $this->call(ContactRoleSeeder::class);
+        $this->call(TransactionSeeder::class);
+        $this->call(RenewalSeeder::class);
     }
 }

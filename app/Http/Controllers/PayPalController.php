@@ -57,9 +57,9 @@ class PayPalController extends Controller
             Transaction::create([
                 'type'=>'invoice',
                 'regarding' => 'membership renewal',
-                'reference_id' =>$hashId,
+                'membership_id' =>$membership->id,
                 'gross_amount_charged'=>$invoice->total(),
-                'transaction_id' => $response->result->id,
+                'processors_transaction_id' => $response->result->id,
                 'response_status_code' => $response->statusCode,
 
             ]);
@@ -84,13 +84,13 @@ class PayPalController extends Controller
         $response = PayPalCaptureOrder::captureOrder($request->orderID, false);
 
         // TODO update membership model and issue MemebershipPayemntCompleted event (if it was)
-$hashId = $response->result->purchase_units[0]->reference_id; 
+        $hashId = $response->result->purchase_units[0]->reference_id; 
 
 
         // TODO update the transaction record with the transaction_id = $response->result->id
         // with the paid amounts and payer details
         if($response->statusCode == 201 && $response->result->status == 'COMPLETED'){
-        $transaction = Transaction::where('transaction_id',$response->result->id)->first();
+        $transaction = Transaction::where('processors_transaction_id',$response->result->id)->first();
         $transaction->payee_name = $response->result->purchase_units[0]->shipping->name->full_name;
         $transaction->gross_amount_paid = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->gross_amount->value;
         $transaction->net_amount_received = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->net_amount->value;
@@ -100,9 +100,6 @@ $hashId = $response->result->purchase_units[0]->reference_id;
 
         }
         
-    
-        
-
         Log::info('capture response',['response'=> $response]);
         return response()->json($response->result);
     }

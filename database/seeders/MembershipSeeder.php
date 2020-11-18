@@ -39,11 +39,8 @@ class MembershipSeeder extends Seeder
                 $membership = \App\Models\Membership::create(
                         [
                             'membership_type_id' => $type->id,
-                            'name' => 'membership name',
+                            'name' => 'faker membership:'.$type->id,
                             'start_date' => $faker->date(),
-                            'last_renewal_sent_date' => $faker->date(),
-                            'last_paid_date' => $faker->date(),
-                            'last_paid_amount' => null,
                             'status' => 'active'
                         ]
                     );
