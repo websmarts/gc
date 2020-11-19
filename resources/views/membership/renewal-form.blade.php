@@ -216,7 +216,10 @@ expert speakers;
                     //return res.json(); // fetch
                     return res.data; //axios
                 }).then(function(details) {
-                    console.log(details);
+                    //console.log(details);
+
+                    // Redirect to payment received conformation page
+                    window.location.replace("{{ route('confirm-renewal') }}");
                     alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
 
                 })

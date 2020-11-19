@@ -25,6 +25,7 @@ class Contact extends Authenticatable
     protected $fillable = [
         'name',
         'organisation_id',
+        'uuid',
         'address_id',
         'phone',
         'email',
@@ -53,6 +54,15 @@ class Contact extends Authenticatable
     public function getRouteKeyName()
     {
         return 'uuid';
+    }
+
+    
+    /**
+     * returns contact email if verified else null
+     */
+    public function verifiedEmailAddress()
+    {
+        return  !is_null($this->email_verified_at) && !empty($this->email) ? $this->email : null;
     }
 
     public function listRoles()

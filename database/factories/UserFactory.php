@@ -25,7 +25,7 @@ class UserFactory extends Factory
         return [
         
             'is_admin' => 0,
-            'uuid' => Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),

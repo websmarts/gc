@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Address;
 use App\Models\Contact;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,7 +27,7 @@ class ContactFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'uuid' => Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'address_id' => Address::factory(1)->create()->first()->id,
             'phone' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->safeEmail,

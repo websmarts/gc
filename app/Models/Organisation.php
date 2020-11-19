@@ -17,9 +17,9 @@ class Organisation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const SETTING_OPTIONS = [
-        'payment_handler' => ['manual'], // Paypal,Stripe      
-    ];
+    // const SETTING_OPTIONS = [
+    //     'payment_handler' => ['manual'], // Paypal,Stripe      
+    // ];
 
     protected $fillable = [
 
@@ -37,7 +37,16 @@ class Organisation extends Model
     protected $dates = ['deleted_at'];
 
     protected $casts = ['settings' => 'json'];
-    protected $allowedSettings = ['payment_handler', 'STRIPE_PUBLISH_KEY', 'STRIPE_SECRET_KEY'];
+
+
+    protected $allowedSettings = [
+        'payment_handler', 
+        'PAYPAL_USE_SANDBOX', 
+        'PAYPAL_SANDBOX_CLIENT_ID',
+        'PAYPAL_SANDBOX_CLIENT_SECRET',
+        'PAYPAL_LIVE_CLIENT_ID',
+        'PAYPAL_LIVE_CLIENT_SECRET'
+    ];
 
 
 

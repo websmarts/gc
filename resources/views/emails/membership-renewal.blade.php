@@ -9,8 +9,9 @@
     <table style="width:100%; font-family:'Century Gothic', Arial, sans-serif; font-size: 16px;">
         <tbody>
             <tr>
-                <td align="center" style="background-color: #eee">
-                    <table style="width: 600px; margin-left: auto; margin-right: auto; margin-top: 20px; margin-bottom: 20px; " cellpadding="0" cellspacing="0">
+                <td></td>
+                <td width="500" align="center" style="background-color: #eee">
+                    <table width="98%" style=" margin-left: auto; margin-right: auto; margin-top: 20px; margin-bottom: 20px; " cellpadding="0" cellspacing="0">
                         <tbody style="background-color: #fff">
                             <tr>
                                 <td style="background-color: #ffffff; padding:5px">
@@ -75,6 +76,7 @@
                         </tbody>
                     </table>
                 </td>
+                <td></td>
             </tr>
         </tbody>
     </table>

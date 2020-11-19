@@ -26,7 +26,7 @@ class OrganisationFactory extends Factory
     {
         $name = $this->faker->company;
         return [
-            'uuid'=> Str::uuid(),
+            'uuid'=> (string) Str::uuid(),
             'name'=> $name,
             'slug' => Str::slug($name,'-'),
             'address_id' => Address::factory()->create()->first()->id,

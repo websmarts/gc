@@ -93,9 +93,11 @@ Route::get('renew/{membershipIdHash?}', function($membershipIdHash = false){
 
     
     return view('membership.renewal-form',compact('membership'));
-
-
 })->name('membership-renewal');
+
+Route::get('confirm-renewal-payment',function(){
+    return view('membership.confirm-renewal-payment');
+})->name('confirm-renewal-payment');
 
 Route::get('cancel-membership/{membership}',function($membership){
     $membership = Membership::findOrFail(app()->hasher->decode($membership));

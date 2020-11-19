@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Membership;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -62,15 +63,16 @@ class MembersImportController extends Controller
 
                     $primaryContact = Contact::create([
                         'organisation_id' => 1,
-                        'uuid' =>Str::uuid(),
+                        'uuid' => (string) Str::uuid(),
                         'name' => $data['contact_name'],
                         'email' => !empty($data['email']) ? $data['email'] : null,
+                        'email_verified_at' => !empty($data['email']) ? Carbon::now()->toDateTimeString() : null,
                         'phone' => !empty($data['phone']) ? $data['phone'] : null,
                         'address_id' => $primaryContactAddress->id,
 
-                    ]);
-
-                    $membership->members()->attach($primaryContact, ['is_primary_contact' => true]);
+                    ]);   
+                    
+                    $membership->members()->attach($primaryContact, ['is_primary_contact' => !empty($data['email'])]); // only set primary contact if email exists
 
                     // Add any remaining members from other items
                     $items->each(function ($data, $key) use ($membership) {
@@ -89,9 +91,10 @@ class MembersImportController extends Controller
 
                         $contact = Contact::create([
                             'organisation_id' => 1,
-                            'uuid' => Str::uuid(),
+                            'uuid' => (string) Str::uuid(),
                             'name' => $data['contact_name'],
                             'email' => !empty($data['email']) ? $data['email'] : null,
+                            'email_verified_at' => !empty($data['email']) ? Carbon::now()->toDateTimeString() : null,
                             'phone' => !empty($data['phone']) ? $data['phone'] : null,
                             'address_id' => $addressId,
 

@@ -3,9 +3,10 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MembershipRenewal extends Mailable
 {
@@ -20,6 +21,7 @@ class MembershipRenewal extends Mailable
      */
     public function __construct($details)
     {
+       Log::info(['construct',$details]);
         $this->details = $details;
     }
 

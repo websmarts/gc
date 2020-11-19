@@ -57,9 +57,23 @@
 
             <x-table.row wire:loading.class="opacity-50" wire:key="{{ $loop->index }}">
 
-                <x-table.cell>{{ $membership->name }}</x-table.cell>
+                <x-table.cell>{{ $membership->name }}
+                    @if($membership->primaryContact() && !$membership->primaryContact()->verifiedEmailAddress())
+                    <p class="text-red-700">Primary contact email not verified</p>
+                    @endif
+                    @if(!$membership->primaryContact())
+                    <p class="text-red-700">Primary contact not set</p>
+                    @endif
+                </x-table.cell>
                 <x-table.cell>{{ $membership->membershipType->name }}</x-table.cell>
-                <x-table.cell>{{ App\Models\Membership::STATUSES[$membership->status] }}</x-table.cell>
+                <x-table.cell>
+                    {{ App\Models\Membership::STATUSES[$membership->status] }}
+                   
+
+
+
+
+                </x-table.cell>
                 <x-table.cell><a href="{{ route('membership.members',['membership'=> $membership->id])}}">{{ $membership->members->count() }} view</a></x-table.cell>
 
                 <x-table.cell>
