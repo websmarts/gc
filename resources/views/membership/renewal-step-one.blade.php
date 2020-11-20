@@ -1,8 +1,8 @@
 <x-guest-layout>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AR_xRpQCuoq2b_n8sgoF3CCg7usHjAHMQwxJjSL6rdb2KNi8yU36F63lVl7jWiExxLW_jXOw5fgI9fdI&buyer-country=AU&locale=en_AU&currency=AUD" data-order-id="9236543">
-        // Required. Replace SB_CLIENT_ID with your sandbox client ID.
-    </script>
+    @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
+    <script src="https://www.paypal.com/sdk/js?client-id={{$onlinePayBy->clientID}}&buyer-country=AU&locale=en_AU&currency=AUD"></script>
+    @endif
 
     <div class="bg-gray-100">
         <div class="pt-12 sm:pt-16 lg:pt-20">
@@ -44,7 +44,7 @@
                                                 </svg>
                                             </div>
                                             <p class="ml-3 text-sm leading-5 text-gray-700">
-                                            Advice on how to get started with your own land care project
+                                                Advice on how to get started with your own land care project
                                             </p>
                                         </li>
                                         <li class="mt-5 flex items-start lg:col-span-1 lg:mt-0">
@@ -55,7 +55,7 @@
                                                 </svg>
                                             </div>
                                             <p class="ml-3 text-sm leading-5 text-gray-700">
-                                            Loan equipment to assist with planting and weed spraying
+                                                Loan equipment to assist with planting and weed spraying
                                             </p>
                                         </li>
                                         <li class="mt-5 flex items-start lg:col-span-1 lg:mt-0">
@@ -66,8 +66,8 @@
                                                 </svg>
                                             </div>
                                             <p class="ml-3 text-sm leading-5 text-gray-700">
-                                            Learn about a wide range of topics through Field Days and workshops with
-expert speakers;
+                                                Learn about a wide range of topics through Field Days and workshops with
+                                                expert speakers;
                                             </p>
                                         </li>
                                         <li class="mt-5 flex items-start lg:col-span-1 lg:mt-0">
@@ -78,7 +78,7 @@ expert speakers;
                                                 </svg>
                                             </div>
                                             <p class="ml-3 text-sm leading-5 text-gray-700">
-                                            The opportunity to meet with friendly like-minded people
+                                                The opportunity to meet with friendly like-minded people
                                             </p>
                                         </li>
                                     </ul>
@@ -97,86 +97,61 @@ expert speakers;
                                     inc GST
                                 </span>
                             </div>
-
-                            <!-- <div class="mt-6">
-              <div class="rounded-md shadow">
-                <a href="#" class="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-                  Renew now
-                </a>
-              </div>
-            </div> -->
-
                         </div>
                     </div>
 
-                    <div class="pt-4 max-w-lg mx-auto overflow-hidden lg:max-w-full lg:flex">
-                        <div class="flex-grow p-4"> Membership payment options. Note: If you would like to cancel your membership <a href="{{ route('cancel-membership',['membership'=>$membership->idHash]) }}">click here</a>
+                    <div class=" max-w-lg lg:max-w-full mx-auto overflow-hidden bg-teal-50 mt-2">
+                        <div class=" text-2xl font-black text-gray-600 px-4 "> Payment options</div>
+
+
+                        <div class="pt-4 max-w-lg mx-auto overflow-hidden lg:max-w-full lg:flex">
+
+
                             <div class="flex-grow lg:flex  justify-between ">
-                                <div class="md:w-1/3 m-2 rounded-lg shadow-sm overflow-hidden bg-teal-50 px-2 py-4">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0 ml-1">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
+                                <div class="lg:w-1/2 m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
 
-                                        <div class="ml-10">Securely pay online via PayPal.<br>
-                                            PayPal provides options to pay using a major credit card or via your own PayPal account if you have one setup.
-
-
-                                        </div>
-                                    </div>
                                     <div class="mt-4 ml-4 mr-4">
                                         <div id="paypal-button-container"></div>
                                     </div>
 
-                                </div>
-                                <div class="md:w-1/3 flex p-10 m-2 rounded-lg shadow-sm overflow-hidden bg-teal-50 px-2 py-4 ">
-                                    <div class="flex-shrink-0 ml-1">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="ml-10">Direct debit into the {{ $membership->membershipType->organisation->name }} bank account.
-                                        <p>Bank account details:<br>
-                                            {{ $membership->membershipType->organisation->bank_account_details }}
-                                        </p>
+                                    <div class="ml-4 mr-4  text-center">Securely pay online via PayPal.<br>
+                                        PayPal provides options to pay using a major credit card or via your own PayPal account if you have one setup.
                                     </div>
 
                                 </div>
-                                <div class="md:w-1/3 flex p-10 m-2 rounded-lg shadow-sm overflow-hidden bg-teal-50 px-2 py-4">
-                                    <div class="flex-shrink-0 ml-1">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
+                                @endif
+
+                                <div class="lg:w-1/2  p-10  m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
+                                    <div class="text-center mt-8 mb-8">
+                                        <x-link.button class="text-white">Pay using offline options</span></x-link.button>
                                     </div>
-                                    <div class="ml-10">To pay by cheque make out your cheque to {{ $membership->membershipType->organisation->name }} and send it to:
-                                        <p class="font-bold py-2">
-                                            {{ $membership->membershipType->organisation->name }}<br>{{ $membership->membershipType->organisation->address->fullAddress }}
-                                        </p>
+
+
+                                    <div class="ml-4 mr-4 text-center">Pay your membership using alternative means including:
+
+                                        Direct debit into the {{ $membership->membershipType->organisation->name }} bank account<br>
+                                        pay by cheque.
+
                                     </div>
+
                                 </div>
-
-
                             </div>
                         </div>
-
-
+                        <div class=" p-4 text-center">If you would wish to cancel your membership <a class="font-extrabold" href="{{ route('cancel-membership',['membership'=>$membership->idHash]) }}">click here</a></div>
                     </div>
-
-
                 </div>
             </div>
         </div>
     </div>
 
-
+    @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
     <script>
         paypal.Buttons({
 
             createOrder: function() {
 
-                return axios('{{ route("membership-renewal-payment",["membership"=>$membership->idHash]) }}', {
+                return axios('{{ route("setup-paypal-membership-renewal-payment",["membership"=>$membership->idHash]) }}', {
                     method: 'post',
                     headers: {
                         "Content-Type": "application/json",
@@ -185,7 +160,7 @@ expert speakers;
                         // "X-CSRF-Token": "{{ csrf_token() }}",
                     },
                 }).then(function(res) {
-                    //console.log(res.data);
+                    console.log(res.data);
                     //return res.json(); // fetch
                     return res.data; // axios
                 }).then(function(data) {
@@ -194,9 +169,9 @@ expert speakers;
                 })
             },
             onApprove: function(data) {
-                //console.log('onApprove');
-                //console.log(data);
-                return axios('{{ route("capture-paypal-transaction") }}', {
+                console.log('onApprove');
+                console.log(data);
+                return axios('{{ route("capture-paypal-membership-renewal-payment") }}', {
                     method: 'post',
                     headers: {
                         "Content-Type": "application/json",
@@ -219,12 +194,13 @@ expert speakers;
                     //console.log(details);
 
                     // Redirect to payment received conformation page
-                    
+
                     alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
 
                 })
             }
         }).render('#paypal-button-container');
     </script>
+    @endif
 
 </x-guest-layout>

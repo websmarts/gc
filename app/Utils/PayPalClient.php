@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use PayPalCheckoutSdk\Core\ProductionEnvironment;
 
 class PayPalClient
 {
@@ -12,24 +13,29 @@ class PayPalClient
      * credentials context. Use this instance to invoke PayPal APIs, provided the
      * credentials have access.
      */
-    public static function client()
+    public static function client($credentails)
     {
-        return new PayPalHttpClient(self::environment());
+        return new PayPalHttpClient(self::environment($credentails));
     }
 
     /**
      * Set up and return PayPal PHP SDK environment with PayPal access credentials.
      * This sample uses SandboxEnvironment. In production, use LiveEnvironment.
      */
-    public static function environment()
+    public static function environment($credentials)
     {
-        if(env('PAYPAL_USE_SANDBOX')){
-            $clientId = env("PAYPAL_SANDBOX_CLIENT_ID");
-            $clientSecret = env("PAYPAL_SANDBOX_CLIENT_SECRET");
-        } else {
-            $clientId = env("PAYPAL_LIVE_CLIENT_ID");
-            $clientSecret = env("PAYPAL_LIVE_CLIENT_SECRET");
-        }
-        return new SandboxEnvironment($clientId, $clientSecret);
+       
+            $clientId = $credentials['clientId'];
+            $clientSecret = $credentials['clientSecret'];
+
+            if($credentials['environment'] == 'sandbox'){
+                return new SandboxEnvironment($clientId, $clientSecret);
+            }
+            if($credentials['environment'] == 'production'){
+                //return new ProductionEnvironment($clientId, $clientSecret);
+            }
+            
+        
+        
     }
 }

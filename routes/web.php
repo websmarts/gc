@@ -75,25 +75,7 @@ Route::get('logout',function(){
     return redirect('/');
 });
 
-Route::get('renew/{membershipIdHash?}', function($membershipIdHash = false){
-   
-    if(!$membershipIdHash){
-        return view('membership.renewal-form-anonymous'); // no membership identifier in request
-    }
-
-    $hasher = app('hasher')->decode($membershipIdHash);
-   
-    if(empty($hasher)){
-        dd('invalid hash supplied');
-    }
-    $membership = Membership::findOrFail($hasher[0]);
-    
-    // TODO check if hashId has expiry attached and if expired or not
-    //[id, time_has_was_made, expiry_hours]
-
-    
-    return view('membership.renewal-form',compact('membership'));
-})->name('membership-renewal');
+Route::get('renew/{membershipIdHash?}', [MembershipRenewalController::class,'index'])->name('membership-renewal');
 
 Route::get('confirm-renewal-payment',function(){
     return view('membership.confirm-renewal-payment');
@@ -110,8 +92,8 @@ Route::get('cancel-membership/{membership}',function($membership){
 })->name('cancel-membership');
 
 //Paypaldev stuff
-Route::post('membership-renewal-payment/{membership}',[PayPalController::class, 'membershipRenewalPayment'])->name('membership-renewal-payment');
-Route::post('capture-paypal-transaction',[PayPalController::class, 'capture'])->name('capture-paypal-transaction');
+Route::post('membership-renewal-payment/{membership}',[PayPalController::class, 'membershipRenewalPayment'])->name('setup-paypal-membership-renewal-payment');
+Route::post('capture-paypal-transaction',[PayPalController::class, 'capture'])->name('capture-paypal-membership-renewal-payment');
 //Route::get('get-paypal-transaction',[PayPalController::class, 'get'])->name('get-paypal-transaction');
 Route::get('paypal-return',[PayPalController::class, 'paypalReturn'])->name('paypal-return');
 Route::get('paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel');

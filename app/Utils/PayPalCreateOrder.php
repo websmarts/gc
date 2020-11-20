@@ -12,14 +12,18 @@ class PayPalCreateOrder
 {
 
 
-    public static function createOrder($invoice)
+    public static function createOrder($invoice,$payPalCredentials)
     {
         $request = new OrdersCreateRequest();
         $request->prefer('return=representation');
         $request->body = $invoice->makeBody();
         // $request->body = self::buildRequestBody();
         // 3. Call PayPal to set up a transaction
-        $client = PayPalClient::client();
+
+        
+
+
+        $client = PayPalClient::client($payPalCredentials);
         $response = $client->execute($request);
 
         return $response;

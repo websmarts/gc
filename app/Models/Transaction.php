@@ -12,7 +12,7 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', // eg income, refund, adjustment, etc
+        'type', // eg invoice, refund, adjustment, etc
         'regarding', // eg [membership/account] renewal
         'membership_id', // eg membership_id
         'organisation_id', // organisation_id

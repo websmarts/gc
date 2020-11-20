@@ -46,7 +46,7 @@
         <div class="flex items-center space-x-4 pr-4">
             <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('login') }}">Login</a>
             <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
-            <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('membership-renewal') }}">Renew membership</a>
+            
         </div>
     </div><!-- end static header -->
 

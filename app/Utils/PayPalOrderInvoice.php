@@ -14,7 +14,7 @@ class PayPalOrderInvoice
     protected $currencyCode = 'AUD';
     protected $items =[];
 
-    public function __construct($referenceId, $description = false)
+    public function __construct($referenceId, $description = '')
     {
         $this->referenceId = $referenceId; // our internal tracking id for transaction
         $this->description = $description; // appears in org account memo field in Paypal to help further identify transaction 
@@ -22,10 +22,10 @@ class PayPalOrderInvoice
         $this->cancelUrl = route(env('PAYPAL_CANCEL_ROUTE_NAME'));
     }
 
-    public function getOrderBody()
-    {
-        dd($this->items);
-    }
+    // public function getOrderBody()
+    // {
+    //     dd($this->items);
+    // }
 
     public function addItem(array $item)
     {
@@ -98,8 +98,8 @@ class PayPalOrderInvoice
             'intent' => 'CAPTURE',
             'application_context' =>
             [
-                'return_url' => 'http://localhost:8000/paypal-return',
-                'cancel_url' => 'http://localhost:8000//paypal-cancel'
+                'return_url' => $this->returnUrl,
+                'cancel_url' => $this->cancelUrl,
             ],
             'purchase_units' =>
             [

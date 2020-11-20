@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Log;
 class PayPalController extends Controller
 {
     
+    protected $membership;
+    
+    
     /**
      * Prepares membership renewal invoice and 
      * submits to PayPal for Payment
@@ -30,17 +33,19 @@ class PayPalController extends Controller
     {
        $id = getIdFromHashId($hashId);
 
-        $membership = Membership::findOrFail($id);
+        $this->membership = Membership::findOrFail($id);
+        $organisation = $this->membership->membershipType->organisation; // need org to get settings for paypal client later
+        
 
         // (1) Create new invoice
-        $invoice = new PayPalOrderInvoice($hashId);
+        $invoice = new PayPalOrderInvoice($this->membership->id);
         // (2) Add line items to invoce
 
-        $tax = $membership->membershipType->organisation->gst_registered ? ($membership->membershipType->membershipFeeAsDollars / 10) : 0;
-        $price = $membership->membershipType->membershipFeeAsDollars - $tax;
+        $tax = $this->membership->membershipType->organisation->gst_registered ? ($this->membership->membershipType->membershipFeeAsDollars / 10) : 0;
+        $price = $this->membership->membershipType->membershipFeeAsDollars - $tax;
         $item = [
-            'name' => $membership->membershipType->name . ' membership renewal',
-            'description' => $membership->membershipType->organisation->name,
+            'name' => $this->membership->membershipType->name . ' membership renewal',
+            'description' => $this->membership->membershipType->organisation->name,
             'quantity' => 1,
             'price' => $price,
             'tax' => $tax,
@@ -49,15 +54,21 @@ class PayPalController extends Controller
         
 
         // submit invoice for payment 
+        if(!$credentials = $this->getCredentials()) {
 
-        $response = PayPalCreateOrder::createOrder($invoice);
+            // TODO Handle this error better eg flash message to user that org suddenly not setup for paypal???
+            dd('INVALID ORGANISATION CREDENTIALS');
+        }
+
+
+        $response = PayPalCreateOrder::createOrder($invoice,$credentials); // pass org to get payment gateway settings
 
         // TODO if okay status code=201 then create a transaction table entry
         if($response->statusCode == '201'){
             Transaction::create([
                 'type'=>'invoice',
                 'regarding' => 'membership renewal',
-                'membership_id' =>$membership->id,
+                'membership_id' =>$this->membership->id,
                 'gross_amount_charged'=>$invoice->total(),
                 'processors_transaction_id' => $response->result->id,
                 'response_status_code' => $response->statusCode,
@@ -74,23 +85,30 @@ class PayPalController extends Controller
         // return $response->result->id;
     }
 
-    public function get(Request $request)
-    {
-        PayPalGetOrder::getOrder($request->orderID);
-    }
+    // public function get(Request $request)
+    // {
+    //     PayPalGetOrder::getOrder($request->orderID);
+    // }
 
     public function capture(Request $request)
     {
-        $response = PayPalCaptureOrder::captureOrder($request->orderID, false);
+        
+        // Need to get the organisation so we can get the paypal credentials
+
+        // retrieve the Transaction from setup so we can get the membershipId
+        $transaction = Transaction::where('processors_transaction_id',$request->orderID)->latest()->first();
+        $this->membership = Membership::findOrFail($transaction->membership_id);
+        
+        $response = PayPalCaptureOrder::captureOrder($request->orderID, $this->getCredentials());
 
         // TODO update membership model and issue MemebershipPayemntCompleted event (if it was)
-        $hashId = $response->result->purchase_units[0]->reference_id; 
+        $membershipId = $response->result->purchase_units[0]->reference_id; 
 
 
         // TODO update the transaction record with the transaction_id = $response->result->id
         // with the paid amounts and payer details
         if($response->statusCode == 201 && $response->result->status == 'COMPLETED'){
-        $transaction = Transaction::where('processors_transaction_id',$response->result->id)->first();
+        $transaction = Transaction::where('processors_transaction_id',$response->result->id)->first();// hmm should it be the latest first?
         $transaction->payee_name = $response->result->purchase_units[0]->shipping->name->full_name;
         $transaction->gross_amount_paid = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->gross_amount->value;
         $transaction->net_amount_received = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->net_amount->value;
@@ -106,10 +124,46 @@ class PayPalController extends Controller
 
     public function paypalReturn()
     {
+        // TODO handle payPal return here??
         dd(request()->all());
     }
     public function paypalCancel()
     {
+        // TODO handle paypal cancel
         dd(request()->all());
+    }
+
+    private function getCredentials()
+    {
+        $organisation = $this->membership->membershipType->organisation;
+        
+        if($settings = (object) $organisation->settings) {
+            
+            if($settings->payment_handler && strtoupper(trim($settings->payment_handler)) == 'PAYPAL'){
+                
+                if( $settings->PAYPAL_USE_SANDBOX == true 
+                    && isSet($settings->PAYPAL_SANDBOX_CLIENT_ID)
+                    && !empty($settings->PAYPAL_SANDBOX_CLIENT_ID)){
+                    $credentials['clientId'] = $settings->PAYPAL_SANDBOX_CLIENT_ID;
+                     $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
+                     $credentials['environment'] = 'sandbox';
+
+                     return $credentials;
+
+                } elseif($settings->PAYPAL_USE_SANDBOX !== true 
+                        && isSet($settings->PAYPAL_CLIENT_ID)
+                        && !empty($settings->PAYPAL_CLIENT_ID)){
+                        $credentials['clientId'] = $settings->PAYPAL_CLIENT_ID;
+                        $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
+                        $credentials['environment']= 'production';
+
+                        return $credentials;
+
+                }
+                
+            }
+            
+        } 
+        return false;
     }
 }

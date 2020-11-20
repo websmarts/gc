@@ -5,10 +5,10 @@
             <x-input.text placeholder="Search memberships ..." wire:model="search" />
         </div>
 
+        
 
 
-
-        <div x-data="{ show: @entangle('showRenewButton') }" x-show='show'>
+        <div x-data x-show="$wire.showRenewButton">
             <div wire:loading.remove>
                 <x-button.primary wire:click.prevent=" sendRenewals()">Send ({{ $this->renewalCount }}) Membership Renewal Emails</x-button.primary>
             </div>
