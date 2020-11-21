@@ -9,6 +9,6 @@
 
 
 
-    <x-gc.welcome-info class="mt-6"/>
+    
 
 </x-guest-layout>

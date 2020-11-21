@@ -1,1 +1,0 @@
-@extends('gc.layouts.main')
