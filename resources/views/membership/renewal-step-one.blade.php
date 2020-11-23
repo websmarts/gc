@@ -110,7 +110,7 @@
                             <div class="flex-grow lg:flex  justify-between ">
                                 @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
                                 <div class="lg:w-1/2 m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
-
+    <div style="display:none" id="processing_indicator" >Processing payment request...</div>
                                     <div class="mt-4 ml-4 mr-4">
                                         <div id="paypal-button-container"></div>
                                     </div>
@@ -147,10 +147,13 @@
 
     @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
     <script>
+
+        var processing = document.getElementById("processing_indicator");
+
         paypal.Buttons({
 
             createOrder: function() {
-
+                processing.style.display = "block"
                 return axios('{{ route("setup-paypal-membership-renewal-payment",["membership"=>$membership->idHash]) }}', {
                     method: 'post',
                     headers: {
@@ -194,6 +197,8 @@
                     //console.log(details);
 
                     // Redirect to payment received conformation page
+
+                    processing.style.display = "none"
 
                     alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
 

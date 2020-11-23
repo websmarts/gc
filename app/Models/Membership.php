@@ -73,30 +73,35 @@ class Membership extends Model
 
     public function latestRenewalPayment()
     {
-        return $this->renewalTransactions()->orderBy('when_received', 'desc')->first();
+        return $this->renewalTransactions()->latest('when_received');
     }
 
 
     public function latestRenewalNotice()
     {
         // return the date of the latest renewal transaction created_at date
-        return $this->renewals()->orderBy('issued_date', 'desc')->first();
+        return $this->renewals()->latest('issued_date');
     }
 
     public function hasBeenSentRenewal()
     {
-        if(! $this->latestRenewalNotice()) return false;
+        if(! $this->latestRenewalNotice->first() ) return false;
         
-        return $this->latestRenewalNotice()->issued_date->greaterThan($this->membershipType->renewalPaymentStartDate());
+        return $this->latestRenewalNotice->first()->issued_date->greaterThan($this->membershipType->renewalPaymentStartDate());
     }
 
     public function isCurrentlyFinancial()
     {
-        if (!$this->latestRenewalPayment()) {
+        if (!$this->latestRenewalPayment->first()) {
             return false;
         }
 
-        return  $this->latestRenewalPayment()->when_received
+        // Transaction record exists but no when_received value has been set
+        if(!$this->latestRenewalPayment->first()->when_received){
+            return false;
+        }
+
+        return  $this->latestRenewalPayment->first()->when_received
             ->greaterThan($this->membershipType->renewalPaymentStartDate());
     }
 
@@ -105,7 +110,11 @@ class Membership extends Model
      */
     public function isRenewable()
     {
-       return  $this->status === 'active' && ! $this->isCurrentlyFinancial() && ! $this->hasBeenSentRenewal();
+       return  $this->status === 'active' 
+       && $this->primaryContact()
+       && $this->primaryContact()->verifiedEmailAddress()
+       && ! $this->isCurrentlyFinancial() 
+       && ! $this->hasBeenSentRenewal();
     }
     public function isNotRenewable()
     {

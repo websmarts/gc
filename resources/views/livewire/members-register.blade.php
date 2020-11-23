@@ -2,7 +2,7 @@
 
     <div class="flex justify-between mb-2">
         <div class="w-1/4">
-            <x-input.text placeholder="Search memberships ..." wire:model="search" />
+            <x-input.text placeholder="Search memberships ..." wire:model.debounce.300ms="search" />
         </div>
 
         
@@ -53,13 +53,13 @@
 
         <x-slot name="body">
 
-            @forelse($memberships as $membership)
+            @forelse($this->organisation->memberships as $membership)
 
             <x-table.row wire:loading.class="opacity-50" wire:key="{{ $loop->index }}">
 
                 <x-table.cell>{{ $membership->name }}
                     @if($membership->primaryContact() && !$membership->primaryContact()->verifiedEmailAddress())
-                    <p class="text-red-700">Primary contact email not verified</p>
+                    <p class="text-red-700">Primary contact email has not been verified yet</p>
                     @endif
                     @if(!$membership->primaryContact())
                     <p class="text-red-700">Primary contact not set</p>
@@ -79,20 +79,20 @@
                 <x-table.cell>
 
 
-                    @if($membership->latestRenewalNotice())
-                    {{ $membership->latestRenewalNotice()->issued_date->tz('Australia/Melbourne')->format('d-m-Y') }}
+                    @if($membership->latestRenewalNotice->first())
+                    {{ $membership->latestRenewalNotice->first()->issued_date->tz('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
 
                 </x-table.cell>
                 <x-table.cell>
-                    @if($membership->latestRenewalPayment())
-                    {{ $membership->latestRenewalPayment()->when_received->timezone('Australia/Melbourne')->format('d-m-Y') }}
+                    @if($membership->latestRenewalPayment->first() )
+                    {{ $membership->latestRenewalPayment->first()->when_received->timezone('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
 
                 </x-table.cell>
                 <x-table.cell>
 
-                    @if(!$membership->latestRenewalPayment())
+                    @if(!$membership->latestRenewalPayment->first())
                     {{ $membership->membershipType->daysIntoSubscription() }} days late
 
                     @elseif( $membership->isCurrentlyFinancial() )
@@ -139,7 +139,7 @@
 
                 <x-input.group for="membership_type_id" label="Membership type" :error="$errors->first('editing.membership_type_id')">
                     <x-input.select id="membership_type_id" wire:model.defer="editing.membership_type_id">
-                        @foreach($membershipTypes as $mt)
+                        @foreach($this->organisation->membershipTypes as $mt)
                         <option value="{{ $mt->id }}">{{ $mt->name }}</option>
                         @endforeach
                     </x-input.select>

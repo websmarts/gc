@@ -5,18 +5,18 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Rules\inputdate;
 use App\Models\Membership;
+use App\Models\Organisation;
 use Illuminate\Support\Carbon;
 use App\Events\MembershipDeleted;
 use App\Models\Contact as Member;
 use App\Models\ContactMembership;
-use App\Jobs\SendMembershipRenewalEmail;
 use App\Models\MembershipRenewal;
+use Illuminate\Support\Facades\Cache;
+use App\Jobs\SendMembershipRenewalEmail;
 
 class MembersRegister extends Component
 {
-
-    public $memberships;
-    public $membershipTypes;
+    public $organisationId;
 
     public $selected = [];
     public $selectAll = false;
@@ -53,9 +53,10 @@ class MembersRegister extends Component
 
     public function mount()
     {
-
-        $this->membershipTypes = selectedOrganisation()->membershipTypes;
+        $this->organisationId = selectedOrganisation()->id;
+        Cache::forget('organisation'.$this->organisationId);
     }
+    
 
     public function orderBy($field)
     {
@@ -70,7 +71,7 @@ class MembersRegister extends Component
     public function updatedSelectAll()
     {
 
-        foreach ($this->memberships as $m) {
+        foreach ($this->organisation->memberships as $m) {
             if ($m->isRenewable()) {
                 $this->selected[$m->id] = $this->selectAll;
             } elseif (isset($this->selected[$m->id])) {
@@ -87,15 +88,12 @@ class MembersRegister extends Component
             $this->selectAll = false; // uncheck the select-all checkbox
         }
 
-        // $this->showRenewButton = collect($this->selected)->filter(function ($value) {
-        //     return $value;
-        // })->count();
+        $this->showRenewButton = collect($this->selected)->filter(function ($value) {
+            return $value;
+        })->count();
     }
 
-    public function getOrganisationProperty()
-    {
-        return selectedOrganisation();
-    }
+    
 
     public function getCheckboxCountProperty()
     {
@@ -114,6 +112,7 @@ class MembersRegister extends Component
         return $this->showRenewButton;
     }
 
+    
     public function updated($name, $value)
     {
         if ($name == 'proxy_start_date') {
@@ -122,6 +121,8 @@ class MembersRegister extends Component
 
         if($name=='search'){
             $this->selectAll = false;
+            
+            Cache::forget('organisation'.$this->organisationId);
         }
     }
 
@@ -141,10 +142,6 @@ class MembersRegister extends Component
             if ($m->isNotRenewable()) { // skip if should not be sent renewal
                 return;
             }
-
-
-
-
             // Prepare the email data
             $primaryContact = $m->primaryContact();
 
@@ -205,13 +202,42 @@ class MembersRegister extends Component
         $this->showEditMembershipModal = false;
     }
 
+    public function hydrate($v)
+    {
+        //dd($v);
+    }
+
+    public function getOrganisationProperty()
+    {
+        
+        $search = $this->search;
+
+        return  Cache::remember('organisation'.$this->organisationId, 600, function () use($search){
+
+           
+
+            return Organisation::with([
+                'memberships'=> function($q) use($search) {
+                    $q->where('memberships.name','like','%'.$search.'%');
+                },
+                'membershipTypes',
+                'memberships.membershipType',
+                'memberships.members',
+                'memberships.latestRenewalNotice',
+                'memberships.latestRenewalPayment'
+            ])->find($this->organisationId);
+        });
+
+    }
+
     public function render()
     {
-        $this->memberships = selectedOrganisation()->memberships()
-            ->where('memberships.name', 'LIKE', '%' . $this->search . '%')
-            ->orderBy($this->orderBy, $this->sortOrder)
-            ->with(['members', 'membershipType'])
-            ->get();
+        // $this->memberships = selectedOrganisation()->memberships()
+        //     ->where('memberships.name', 'LIKE', '%' . $this->search . '%')
+        //     ->orderBy($this->orderBy, $this->sortOrder)
+        //     ->with(['members', 'membershipType','latestRenewalNotice','latestRenewalPayment'])
+        //     ->get();
+
         // $this->memberships = Membership::join('membership_types','memberships.membership_type_id','=','membership_types.id')
         // ->where('membership_types.organisation_id',selectedOrganisation()->first()->id)
         // ->join('contacts_memberships','memberships.id','=','contacts_memberships.membership_id')

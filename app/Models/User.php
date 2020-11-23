@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Organisation;
 use Laravel\Sanctum\HasApiTokens;
 use \App\Traits\UserHasRolesTrait;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -58,13 +59,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function selectedOrganisation()
     {
        if(! is_null($this->last_selected_organisation_uuid)) {
-           return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+
+           return Cache::remember('selected_organisation_'.$this->last_selected_organisation_uuid, 60, function()
+           {
+               return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+           });
        }
 
        $this->last_selected_organisation_uuid = $this->organisations->first()->uuid;
        $this->save();
-       return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
-
+       return cache::remember('selected_organisation'.$this->last_selected_organisation_uuid,60,function(){
+            return $this->organisations()->where('uuid',$this->last_selected_organisation_uuid)->get()->first();
+       });
     }
    
     /**

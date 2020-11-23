@@ -20,7 +20,7 @@
 </head>
 
 <body class="bg-gray-100">
-    <div class="flex justify-between bg-teal-900 ">
+    <div class="flex justify-between items-center bg-teal-900 ">
         <a href="/" class="flex items-center text-white py-2 pt-4">
             <svg class="h-12 w-12 md:h-16 md:w-16" version="1.1" viewBox="0 0 .81444 1.1537" xmlns="http://www.w3.org/2000/svg">
                 <g transform="translate(-6.9426 -13.633)">
@@ -34,30 +34,13 @@
             </svg>
             <span class="block text-2xl md:text-4xl px-2 py-4">GroupCare </span>
         </a>
+        <div class="text-white text-2xl">Neerim District Landcare Group</div>
+        <div class="text-white text-xl mr-2"> Group Management System</div>
 
-        <!-- static mainnav -->
-        <div class="hidden sm:flex justify-center items-strech space-x-4 pt-2 pb-2 mt-8 w-1/3">
-            <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
-        </div>
-
-
-        <div class="flex items-center space-x-4 pr-4">
-            <a class="block px-2 py-4 text-white hover:text-gray-100" href="{{ route('login') }}">Login</a>
-            <a class="block px-2 py-4  text-white hover:text-gray-100" href="{{ route('register') }}">Register</a>
-            
-        </div>
+      
     </div><!-- end static header -->
 
-    <!-- mobile mainnav -->
-    <div class="sm:hidden flex bg-teal-900 w-full border-t border-gray-500">
-        <div class="flex sm:hidden justify-center items-strech space-x-4  mt-4 w-full">
-            <x-guest-nav-link color="teal" to="{{ route('welcome') }}">Home</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">About</x-guest-nav-link>
-            <x-guest-nav-link color="teal" to="#">Features</x-guest-nav-link>
-        </div>
-    </div>
+    
 
 
 

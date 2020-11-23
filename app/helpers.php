@@ -26,7 +26,7 @@ function format_cents_to_dollar_display($cents=0)
  */
 function selectedOrganisation()
 { 
-    return auth()->user()->selectedOrganisation();
+    return auth()->user()->selectedOrganisation(); // returns instance of App\Models\Organisation
 }
 
 /**
