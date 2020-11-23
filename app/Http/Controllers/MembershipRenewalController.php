@@ -36,7 +36,7 @@ class MembershipRenewalController extends Controller
         
         if($settings = (object) $membership->membershipType->organisation->settings) {
             
-            if($settings->payment_handler && strtoupper(trim($settings->payment_handler)) == 'PAYPAL'){
+            if(isSet($settings->payment_handler) && strtoupper(trim($settings->payment_handler)) == 'PAYPAL'){
                 $onlinePayBy->name = 'PAYPAL';
                 if( $settings->PAYPAL_USE_SANDBOX == true 
                     && isSet($settings->PAYPAL_SANDBOX_CLIENT_ID)
