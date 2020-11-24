@@ -25,6 +25,25 @@ class MembershipType extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $appends = [
+        'membership_fee_as_dollars'
+    ];
+
+    /**
+     * Accessor so we can use dollars (not cents) for display and editing
+     */
+    public function getMembershipFeeAsDollarsAttribute()
+    {
+        return $this->membership_fee !== 0 ? number_format($this->membership_fee / 100 ,2): 0;
+    }
+    /**
+     * Mutator to convert dollar value to cents
+     */
+    public function setMembershipFeeAsDollarsAttribute($value)
+    {
+        $this->membership_fee = $value * 100;
+    }
+
     /**
      * The start date of the current subscription year
      */
@@ -60,20 +79,7 @@ class MembershipType extends Model
         return $this->currentSubscriptionPeriod()->start_date->diffInDays();
     }
 
-    /**
-     * Accessor so we can use dollars (not cents) for display and editing
-     */
-    public function getMembershipFeeAsDollarsAttribute()
-    {
-        return $this->membership_fee !== 0 ? $this->membership_fee / 100 : 0;
-    }
-    /**
-     * Mutator to convert dollar value to cents
-     */
-    public function setMembershipFeeAsDollarsAttribute($value)
-    {
-        $this->membership_fee = $value * 100;
-    }
+    
 
     /**
      * Any payments received after this date are considered payment for the full year

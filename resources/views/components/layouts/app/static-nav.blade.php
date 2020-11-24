@@ -18,7 +18,8 @@
                     
                         <x-layouts.app.nav-link  color="teal" to="{{ route('membershiptypes') }}">Membership options</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="{{ route('members.register') }}">Membership register</x-layouts.app.nav-link>
-                        <x-layouts.app.nav-link  color="teal" to="{{ route('contacts.register') }}">Non-member contacts</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('positions.register') }}">Current positions</x-layouts.app.nav-link>
+                        <x-layouts.app.nav-link  color="teal" to="{{ route('contacts.register') }}">Useful contacts</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Communications</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="#">Insurance</x-layouts.app.nav-link>
                         <x-layouts.app.nav-link  color="teal" to="{{ route('organisation.settings') }}">Settings</x-layouts.app.nav-link>

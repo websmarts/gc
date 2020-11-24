@@ -30,13 +30,13 @@ class OrganisationRole extends Model
     //     return $this->belongsTo(Organisation::class);
     // }
 
-    // public function roleOptions()
-    // {
-    //     return $this->hasMany(RoleOption::class);
-    // }
+    public function role()
+    {
+        return $this->belongsTo(RoleOption::class);
+    }
 
-    // public function contact()
-    // {
-    //     return $this->belongsTo(Contact::class);
-    // }
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }

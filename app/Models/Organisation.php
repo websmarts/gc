@@ -60,6 +60,8 @@ class Organisation extends Model
 
     /**
      * Support for storing settings as JSON in settings attribute
+     * usage: call $organisation->settings()->merge($attr) to save allowed attrs
+     * into settings field as json
      */
     public function settings()
     {
@@ -94,9 +96,10 @@ class Organisation extends Model
         return $this->hasManyThrough(Membership::class, MembershipType::class);
     }
 
-    public function roleOptions()
+    public function positions()
     {
-        return $this->belongsToMany(RoleOption::class, 'organisation_roles', 'organisation_id', 'role_id')->withPivot('contact_id');
+        //return $this->belongsToMany(RoleOption::class, 'organisation_roles', 'organisation_id', 'role_id')->withPivot('contact_id');
+        return $this->hasMany(OrganisationRole::class);
     }
 
     public function members($primary_contacts_only = false)

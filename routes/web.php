@@ -143,7 +143,7 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
 
         // Members Register for the selected Organisation
         Route::get('members-register', function () {
-            return view('manager.membersregister');
+            return view('manager.members-register');
         })->name('members.register');
 
         // Create a Membership for the selected Organisation
@@ -159,8 +159,13 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
         
         // Manage the contacts register for the selected Organisation
         Route::get('contacts-register', function () {
-            return view('manager.contactsregister');
+            return view('manager.contacts-register');
         })->name('contacts.register');
+
+        // Manage the positions register for the selected Organisation
+        Route::get('positions-register', function () {
+            return view('manager.positions-register');
+        })->name('positions.register');
 
         // Manage the settings for the selected Organisation
         Route::get('organisation-settings', function () {

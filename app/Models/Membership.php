@@ -38,6 +38,16 @@ class Membership extends Model
         return app()->hasher->encode($this->id);
     }
 
+    // Accessors
+    public function getLatestRenewalIssuedDateProperty()
+    {
+       if($renewal = $this->latestRenewalNoticeQuery()->first()) return $renewal->issued_date;
+    }
+    public function getLatestRenewalRenewalPaymentDateProperty()
+    {
+       if($renewal = $this->latestRenewalPaymentQuery()->first()) return $renewal->when_received;
+    }
+
     /**
      * Relationships
      */
@@ -71,37 +81,45 @@ class Membership extends Model
         return $this->members->where('pivot.is_primary_contact', true)->first();
     }
 
-    public function latestRenewalPayment()
+    /**
+     * returns hasMany queryBuilder
+     */
+    public function latestRenewalPaymentQuery()
     {
         return $this->renewalTransactions()->latest('when_received');
     }
 
 
-    public function latestRenewalNotice()
+    /**
+     * Returns hasMany queryBuilder
+     */
+    public function latestRenewalNoticeQuery()
     {
-        // return the date of the latest renewal transaction created_at date
+        // return the date of the latest renewal transaction
         return $this->renewals()->latest('issued_date');
     }
 
+    
+
     public function hasBeenSentRenewal()
     {
-        if(! $this->latestRenewalNotice->first() ) return false;
+        if(! $this->latestRenewalNoticeQuery->first() ) return false;
         
-        return $this->latestRenewalNotice->first()->issued_date->greaterThan($this->membershipType->renewalPaymentStartDate());
+        return $this->latestRenewalNoticeQuery->first()->issued_date->greaterThan($this->membershipType->renewalPaymentStartDate());
     }
 
     public function isCurrentlyFinancial()
     {
-        if (!$this->latestRenewalPayment->first()) {
+        if (!$this->latestRenewalPaymentQuery->first()) {
             return false;
         }
 
         // Transaction record exists but no when_received value has been set
-        if(!$this->latestRenewalPayment->first()->when_received){
+        if(!$this->latestRenewalPaymentQuery->first()->when_received){
             return false;
         }
 
-        return  $this->latestRenewalPayment->first()->when_received
+        return  $this->latestRenewalPaymentQuery->first()->when_received
             ->greaterThan($this->membershipType->renewalPaymentStartDate());
     }
 

@@ -15,6 +15,9 @@ class Settings {
         $this->allowed = $allowed;
     }
 
+    /**
+     * Merges allowed attributes into model settings (json) attribute 
+     */
     public function merge(array $attributes)
     {
       

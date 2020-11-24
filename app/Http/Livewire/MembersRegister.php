@@ -22,8 +22,6 @@ class MembersRegister extends Component
     public $selectAll = false;
 
     public $search = '';
-    public $orderBy = 'name';
-    public $sortOrder = 'asc';
 
     public $editing; // Membership Model
     public $proxy_start_date; // temp holder for editing.start_date
@@ -54,18 +52,7 @@ class MembersRegister extends Component
     public function mount()
     {
         $this->organisationId = selectedOrganisation()->id;
-        Cache::forget('organisation'.$this->organisationId);
-    }
-    
-
-    public function orderBy($field)
-    {
-        if ($this->orderBy == $field) {
-            $this->sortOrder = $this->sortOrder == 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortOrder = 'asc';
-        }
-        $this->orderBy = $field;
+        Cache::forget('organisation' . $this->organisationId);
     }
 
     public function updatedSelectAll()
@@ -93,11 +80,10 @@ class MembersRegister extends Component
         })->count();
     }
 
-    
+
 
     public function getCheckboxCountProperty()
     {
-
         $this->showSelectAll = count($this->selected);
         return $this->showSelectAll;
     }
@@ -112,17 +98,17 @@ class MembersRegister extends Component
         return $this->showRenewButton;
     }
 
-    
+
     public function updated($name, $value)
     {
         if ($name == 'proxy_start_date') {
             $this->proxy_start_date = str_replace('/', '-', $value);
         }
 
-        if($name=='search'){
+        if ($name == 'search') {
             $this->selectAll = false;
-            
-            Cache::forget('organisation'.$this->organisationId);
+
+            Cache::forget('organisation' . $this->organisationId);
         }
     }
 
@@ -154,11 +140,9 @@ class MembersRegister extends Component
                     'issued_date' => Carbon::now(),
                 ]);
 
-
-
                 $details = [
                     'email' => $primaryContact->verifiedEmailAddress(),
-                    'membership_id_hash' => app('hasher')->encode([$m->id, time(), 24]),// id,now time, hours to expiry
+                    'membership_id_hash' => app('hasher')->encode([$m->id, time(), 24]), // id,now time, hours to expiry
                     'organisation_name' => selectedOrganisation()->name,
                     'primary_contact' => $primaryContact->name,
                     'membership_name' => $m->name,
@@ -168,9 +152,8 @@ class MembersRegister extends Component
                 dispatch(new SendMembershipRenewalEmail($details));
             }
         });
+        Cache::forget('organisation' . $this->organisationId);
     }
-
-
 
     public function edit(Membership $membership)
     {
@@ -190,6 +173,7 @@ class MembersRegister extends Component
         $this->editing->start_date = new Carbon($this->proxy_start_date); // proxy date must be in dd-mm-yyyy NOT dd/mm/yyyyformat
         $this->editing->save();
         $this->showEditMembershipModal = false;
+        Cache::forget('organisation' . $this->organisationId);
     }
 
     public function deleteMembership()
@@ -197,59 +181,38 @@ class MembersRegister extends Component
 
         $this->editing->delete();
 
-        // Close both modals
+        // Close both modals and forget cached query
         $this->showConfirmDeleteMembershipModal = false;
         $this->showEditMembershipModal = false;
+        Cache::forget('organisation' . $this->organisationId);
     }
 
-    public function hydrate($v)
-    {
-        //dd($v);
-    }
 
+    /**
+     * Use computed property  to minimise the hydration loading 
+     * and maximise benefits of caching
+     */
     public function getOrganisationProperty()
     {
-        
         $search = $this->search;
 
-        return  Cache::remember('organisation'.$this->organisationId, 600, function () use($search){
-
-           
+        return  Cache::remember('organisation' . $this->organisationId, 600, function () use ($search) {
 
             return Organisation::with([
-                'memberships'=> function($q) use($search) {
-                    $q->where('memberships.name','like','%'.$search.'%');
+                'memberships' => function ($q) use ($search) {
+                    $q->where('memberships.name', 'like', '%' . $search . '%');
                 },
                 'membershipTypes',
                 'memberships.membershipType',
                 'memberships.members',
-                'memberships.latestRenewalNotice',
-                'memberships.latestRenewalPayment'
+                'memberships.latestRenewalNoticeQuery',
+                'memberships.latestRenewalPaymentQuery'
             ])->find($this->organisationId);
         });
-
     }
 
     public function render()
     {
-        // $this->memberships = selectedOrganisation()->memberships()
-        //     ->where('memberships.name', 'LIKE', '%' . $this->search . '%')
-        //     ->orderBy($this->orderBy, $this->sortOrder)
-        //     ->with(['members', 'membershipType','latestRenewalNotice','latestRenewalPayment'])
-        //     ->get();
-
-        // $this->memberships = Membership::join('membership_types','memberships.membership_type_id','=','membership_types.id')
-        // ->where('membership_types.organisation_id',selectedOrganisation()->first()->id)
-        // ->join('contacts_memberships','memberships.id','=','contacts_memberships.membership_id')
-        // ->join('contacts','contacts_memberships.contact_id','=','contacts.id')
-        // ->select(
-        //     'memberships.*',
-        //     'membership_types.name as membership_type_name',
-        //     'contacts_memberships.is_primary_contact',
-        //     'contacts.name as contact_name')
-        // ->get();
-        // dd($this->memberships->first()->toArray());
-
         return view('livewire.members-register');
     }
 }

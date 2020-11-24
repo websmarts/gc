@@ -5,8 +5,6 @@
             <x-input.text placeholder="Search memberships ..." wire:model.debounce.300ms="search" />
         </div>
 
-        
-
 
         <div x-data x-show="$wire.showRenewButton">
             <div wire:loading.remove>
@@ -15,8 +13,7 @@
         </div>
 
         <div class="p-2 text-right">
-            <a href="{{ route('create.membership') }}">
-                <x-icon.plus />Add membership</a>
+            <x-link.text to="{{ route('create.membership') }}"><x-icon.plus />Add membership</x-link.text>
         </div>
 
 
@@ -68,31 +65,33 @@
                 <x-table.cell>{{ $membership->membershipType->name }}</x-table.cell>
                 <x-table.cell>
                     {{ App\Models\Membership::STATUSES[$membership->status] }}
-                   
+
 
 
 
 
                 </x-table.cell>
-                <x-table.cell><a href="{{ route('membership.members',['membership'=> $membership->id])}}">{{ $membership->members->count() }} view</a></x-table.cell>
+                <x-table.cell>{{ $membership->members->count() }} <x-link.text to="{{ route('membership.members',['membership'=> $membership->id])}}">
+                    view</x-link.text>
+                </x-table.cell>
 
                 <x-table.cell>
 
 
-                    @if($membership->latestRenewalNotice->first())
-                    {{ $membership->latestRenewalNotice->first()->issued_date->tz('Australia/Melbourne')->format('d-m-Y') }}
+                    @if($membership->latestRenewalNoticeDate)
+                    {{ $membership->latestRenewalNoticeDate->tz('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
 
                 </x-table.cell>
                 <x-table.cell>
-                    @if($membership->latestRenewalPayment->first() )
-                    {{ $membership->latestRenewalPayment->first()->when_received->timezone('Australia/Melbourne')->format('d-m-Y') }}
+                    @if($membership->latestRenewalPaymentDate )
+                    {{ $membership->latestRenewalPaymentDate->tz('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
 
                 </x-table.cell>
                 <x-table.cell>
 
-                    @if(!$membership->latestRenewalPayment->first())
+                    @if(!$membership->latestRenewalPaymentDate)
                     {{ $membership->membershipType->daysIntoSubscription() }} days late
 
                     @elseif( $membership->isCurrentlyFinancial() )
@@ -111,7 +110,7 @@
 
                 <x-table.cell class="w/12 text-right">
 
-                    <x-button.link class="hover:underline" wire:click="edit({{ $membership->id }})">edit</x-button.link>
+                    <x-button.link class="underline hover:no-underline" wire:click="edit({{ $membership->id }})">edit</x-button.link>
                 </x-table.cell>
 
             </x-table.row>

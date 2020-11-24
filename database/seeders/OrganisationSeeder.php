@@ -19,7 +19,7 @@ class OrganisationSeeder extends Seeder
     public function run()
     {
         $name = 'Neerim District Landcare Group';
-        Organisation::create([
+        $org = Organisation::create([
             'uuid'=>Str::uuid(),
             'name'=> $name,
             'slug'=> Str::slug($name.'-'),
@@ -28,7 +28,14 @@ class OrganisationSeeder extends Seeder
             'abn' => '98765456778',
             'phone' => '56567788',
             'bank_account_details'=>'branch 006633 acct #1234567',
-        ])->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
+        ]);
+        $org->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
+        $org->settings()->merge([
+            'payment_handler'=>'paypal',
+            'PAYPAL_USE_SANDBOX' => true,
+            'PAYPAL_SANDBOX_CLIENT_ID' => 'AR_xRpQCuoq2b_n8sgoF3CCg7usHjAHMQwxJjSL6rdb2KNi8yU36F63lVl7jWiExxLW_jXOw5fgI9fdI',
+            'PAYPAL_SANDBOX_CLIENT_SECRET' => 'EO-9JT9ltiZ13Ddkmk7yWgM8YHLjX41Cb20WldpZr0_Jbl4Zldy4R5XIGlTSgq-0hYVVBjdJkIAdN0Gs'
+            ]);
 
         
         for($n = 0; $n <10; $n++){

@@ -22,7 +22,7 @@
                 <x-table.cell>{{ $mt->description }}</x-table.cell>
                 <x-table.cell>{{ $mt->max_people }}</x-table.cell>
                 <x-table.cell>{{ $mt->renewal_month ? MONTHS[$mt->renewal_month] : '' }}</x-table.cell>
-                <x-table.cell>{{ number_format($mt->membership_fee_as_dollars,2) }}</x-table.cell>
+                <x-table.cell>{{ $mt->membership_fee_as_dollars }}</x-table.cell>
                 <x-table.cell wire:click="show({{$mt->id}})">
                     <x-button.link>edit</x-button.link>
                 </x-table.cell>
