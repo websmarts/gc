@@ -106,7 +106,8 @@ Route::post('membership-renewal-payment/{membership}',[PayPalController::class, 
 Route::post('capture-paypal-transaction',[PayPalController::class, 'capture'])->name('capture-paypal-membership-renewal-payment');
 //Route::get('get-paypal-transaction',[PayPalController::class, 'get'])->name('get-paypal-transaction');
 Route::get('paypal-return',[PayPalController::class, 'paypalReturn'])->name('paypal-return');
-Route::post('paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel');
+Route::match(['get','post'],'paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel'); // handles xhr cancel request
+
 
 Route::get('membership-renewal-confirmed/{membershipIdHash}',[MembershipRenewalController::class,'confirm'])->name('membership-renewal-confirm');
 Route::get('renew-offline/{membershipIdHash}',[MembershipRenewalController::class,'offline'])->name('membership-renew-offline'); 
