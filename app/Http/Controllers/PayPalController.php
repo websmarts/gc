@@ -96,8 +96,11 @@ class PayPalController extends Controller
         // Need to get the organisation so we can get the paypal credentials
 
         // retrieve the Transaction from setup so we can get the membershipId
+        Log::info('capture request',['request'=> $request]);
         $transaction = Transaction::where('processors_transaction_id',$request->orderID)->latest()->first();
+        Log::info('capture transaction',['transaction'=> $transaction]);
         $this->membership = Membership::findOrFail($transaction->membership_id);
+        Log::info('capture membership',['membership'=> $this->membership]);
         
         $response = PayPalCaptureOrder::captureOrder($request->orderID, $this->getCredentials());
 
