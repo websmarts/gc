@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Log;
 
 class PayPalController extends Controller
 {
-    
+
     protected $membership;
-    
-    
+
+
     /**
      * Prepares membership renewal invoice and 
      * submits to PayPal for Payment
@@ -31,11 +31,11 @@ class PayPalController extends Controller
      */
     public function membershipRenewalPayment($hashId)
     {
-       $id = getIdFromHashId($hashId);
+        $id = getIdFromHashId($hashId);
 
         $this->membership = Membership::findOrFail($id);
         $organisation = $this->membership->membershipType->organisation; // need org to get settings for paypal client later
-        
+
 
         // (1) Create new invoice
         $invoice = new PayPalOrderInvoice($this->membership->id);
@@ -51,25 +51,25 @@ class PayPalController extends Controller
             'tax' => $tax,
         ];
         $invoice->addItem($item);
-        
+
 
         // submit invoice for payment 
-        if(!$credentials = $this->getCredentials()) {
+        if (!$credentials = $this->getCredentials()) {
 
             // TODO Handle this error better eg flash message to user that org suddenly not setup for paypal???
             dd('INVALID ORGANISATION CREDENTIALS');
         }
 
 
-        $response = PayPalCreateOrder::createOrder($invoice,$credentials); // pass org to get payment gateway settings
+        $response = PayPalCreateOrder::createOrder($invoice, $credentials); // pass org to get payment gateway settings
 
         // TODO if okay status code=201 then create a transaction table entry
-        if($response->statusCode == '201'){
+        if ($response->statusCode == '201') {
             Transaction::create([
-                'type'=>'invoice',
+                'type' => 'invoice',
                 'regarding' => 'membership renewal',
-                'membership_id' =>$this->membership->id,
-                'gross_amount_charged'=>$invoice->total(),
+                'membership_id' => $this->membership->id,
+                'gross_amount_charged' => $invoice->total(),
                 'processors_transaction_id' => $response->result->id,
                 'response_status_code' => $response->statusCode,
 
@@ -85,41 +85,40 @@ class PayPalController extends Controller
         // return $response->result->id;
     }
 
-    
+
 
     public function capture(Request $request)
     {
-        
+
         // Need to get the organisation so we can get the paypal credentials
 
         // retrieve the Transaction from setup so we can get the membershipId
         // Log::info('capture request',['request'=> $request]);
-        $transaction = Transaction::where('processors_transaction_id',$request->orderID)->latest()->first();
+        $transaction = Transaction::where('processors_transaction_id', $request->orderID)->latest()->first();
         // Log::info('capture transaction',['transaction'=> $transaction]);
         $this->membership = Membership::findOrFail($transaction->membership_id);
 
 
         // Log::info('capture membership',['membership'=> $this->membership]);
-        
+
         $response = PayPalCaptureOrder::captureOrder($request->orderID, $this->getCredentials());
 
         // TODO update membership model and issue MemebershipPayemntCompleted event (if it was)
-        $membershipId = $response->result->purchase_units[0]->reference_id; 
+        $membershipId = $response->result->purchase_units[0]->reference_id;
 
 
         // TODO update the transaction record with the transaction_id = $response->result->id
         // with the paid amounts and payer details
-        if($response->statusCode == 201 && $response->result->status == 'COMPLETED'){
-        $transaction = Transaction::where('processors_transaction_id',$response->result->id)->first();// hmm should it be the latest first?
-        $transaction->payee_name = $response->result->purchase_units[0]->shipping->name->full_name;
-        $transaction->gross_amount_paid = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->gross_amount->value;
-        $transaction->net_amount_received = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->net_amount->value;
-        $transaction->when_received = Carbon::now();
+        if ($response->statusCode == 201 && $response->result->status == 'COMPLETED') {
+            $transaction = Transaction::where('processors_transaction_id', $response->result->id)->first(); // hmm should it be the latest first?
+            $transaction->payee_name = $response->result->purchase_units[0]->shipping->name->full_name;
+            $transaction->gross_amount_paid = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->gross_amount->value;
+            $transaction->net_amount_received = $response->result->purchase_units[0]->payments->captures[0]->seller_receivable_breakdown->net_amount->value;
+            $transaction->when_received = Carbon::now();
 
-        $transaction->save();
-
+            $transaction->save();
         }
-        
+
         // Log::info('capture response',['response'=> $response]);
         return response()->json($response->result);
     }
@@ -131,7 +130,10 @@ class PayPalController extends Controller
     }
     public function paypalCancel(Request $request)
     {
-        if(!Transaction::where('processors_transaction_id',$request->orderID)->forceDelete()){
+
+        
+
+        if (!Transaction::where('processors_transaction_id', $request->token)->forceDelete()) {
             return false;
         }
         return true;
@@ -140,34 +142,34 @@ class PayPalController extends Controller
     private function getCredentials()
     {
         $organisation = $this->membership->membershipType->organisation;
-        
-        if($settings = (object) $organisation->settings) {
-            
-            if($settings->payment_handler && strtoupper(trim($settings->payment_handler)) == 'PAYPAL'){
-                
-                if( $settings->PAYPAL_USE_SANDBOX == true 
-                    && isSet($settings->PAYPAL_SANDBOX_CLIENT_ID)
-                    && !empty($settings->PAYPAL_SANDBOX_CLIENT_ID)){
+
+        if ($settings = (object) $organisation->settings) {
+
+            if ($settings->payment_handler && strtoupper(trim($settings->payment_handler)) == 'PAYPAL') {
+
+                if (
+                    $settings->PAYPAL_USE_SANDBOX == true
+                    && isset($settings->PAYPAL_SANDBOX_CLIENT_ID)
+                    && !empty($settings->PAYPAL_SANDBOX_CLIENT_ID)
+                ) {
                     $credentials['clientId'] = $settings->PAYPAL_SANDBOX_CLIENT_ID;
-                     $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
-                     $credentials['environment'] = 'sandbox';
+                    $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
+                    $credentials['environment'] = 'sandbox';
 
-                     return $credentials;
+                    return $credentials;
+                } elseif (
+                    $settings->PAYPAL_USE_SANDBOX !== true
+                    && isset($settings->PAYPAL_CLIENT_ID)
+                    && !empty($settings->PAYPAL_CLIENT_ID)
+                ) {
+                    $credentials['clientId'] = $settings->PAYPAL_CLIENT_ID;
+                    $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
+                    $credentials['environment'] = 'production';
 
-                } elseif($settings->PAYPAL_USE_SANDBOX !== true 
-                        && isSet($settings->PAYPAL_CLIENT_ID)
-                        && !empty($settings->PAYPAL_CLIENT_ID)){
-                        $credentials['clientId'] = $settings->PAYPAL_CLIENT_ID;
-                        $credentials['clientSecret'] = $settings->PAYPAL_SANDBOX_CLIENT_SECRET;
-                        $credentials['environment']= 'production';
-
-                        return $credentials;
-
+                    return $credentials;
                 }
-                
             }
-            
-        } 
+        }
         return false;
     }
 }

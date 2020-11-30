@@ -19,8 +19,8 @@
         </div>
         <div class="mt-8 bg-white pb-16 sm:mt-12 sm:pb-20 lg:pb-28">
             <div class="relative">
-                <div class="absolute inset-0 h-1/2 bg-gray-100"></div>
-                <div class="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="absolute inset-0 "></div>
+                <div class="relative max-w-screen-xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
                     <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex">
                         <div class="flex-1 bg-white px-6 py-8 lg:p-12">
                             <h3 class="text-2xl leading-8 font-extrabold text-gray-900 sm:text-3xl sm:leading-9">
@@ -100,11 +100,11 @@
                         </div>
                     </div>
 
-                    <div class=" max-w-lg lg:max-w-full mx-auto overflow-hidden bg-teal-50 mt-2">
+                    <div class=" max-w-lg lg:max-w-full mx-auto overflow-hidden bg-teal-50 mt-8">
                         <div class=" text-2xl font-black text-gray-600 px-4 "> Payment options</div>
 
 
-                        <div class="pt-4 max-w-lg mx-auto overflow-hidden lg:max-w-full lg:flex">
+                        <div class="pt-4 max-w-lg mx-auto overflow-hidden lg:max-w-full lg:flex ">
 
 
                             <div class="flex-grow lg:flex  justify-between ">
@@ -188,7 +188,7 @@
                         // "X-CSRF-Token": "{{ csrf_token() }}",
                     },
                     data: {
-                        orderID: data.orderID
+                        token: data.orderID
                     }
                     // fetch sends data via body see below
                     // body: JSON.stringify({
