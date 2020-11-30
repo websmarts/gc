@@ -112,29 +112,31 @@
                             <div class="flex-grow lg:flex  justify-between ">
                                 @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
                                 <div class="lg:w-1/2 m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
+                                    
+
+                                    <div class="ml-4 mr-4  text-center">Securely pay online via PayPal.<br>
+                                        PayPal provides options to pay using a major credit card or via your own PayPal account if you already have one setup.
+                                    </div>
                                     <div style="display:none" id="processing_indicator">Processing payment request...</div>
                                     <div class="mt-4 ml-4 mr-4">
                                         <div id="paypal-button-container"></div>
-                                    </div>
-
-                                    <div class="ml-4 mr-4  text-center">Securely pay online via PayPal.<br>
-                                        PayPal provides options to pay using a major credit card or via your own PayPal account if you have one setup.
                                     </div>
 
                                 </div>
                                 @endif
 
                                 <div class="lg:w-1/2  p-10  m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
-                                    <div class="text-center mt-8 mb-8">
-                                        <x-link.button to="{{ route('membership-renew-offline',['membershipIdHash'=>$membership->idHash]) }}" class="text-white">Pay using offline options</span></x-link.button>
-                                    </div>
+                                    
 
 
                                     <div class="ml-4 mr-4 text-center">Pay your membership using alternative means including:
 
                                         Direct debit into the {{ $membership->membershipType->organisation->name }} bank account<br>
-                                        pay by cheque.
+                                        or pay by cheque.
 
+                                    </div>
+                                    <div class="text-center mt-8 mb-8">
+                                        <x-link.button to="{{ route('membership-renew-offline',['membershipIdHash'=>$membership->idHash]) }}" class="text-white">Pay using offline options</span></x-link.button>
                                     </div>
 
                                 </div>
