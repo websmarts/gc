@@ -32,6 +32,8 @@ class PayPalClient
                 return new SandboxEnvironment($clientId, $clientSecret);
             }
             if($credentials['environment'] == 'production'){
+
+                // TODO uncomment the following line to activate live paypal
                 //return new ProductionEnvironment($clientId, $clientSecret);
             }
             

@@ -209,13 +209,14 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
                 'organisation_name'=>"Neerim and District Landcare Group",
                 'primary_contact' => $primaryContact->name,
                 'membership_name'=>$m->name,
-                'subscription_period_end_date' => '1-'.$m->membershipType->renewal_month.'-'.date('Y'),
+                'subscription_period_end_date' =>  $m->membershipType->currentSubscriptionPeriod()->end_date->format('d-m-Y'),
+                'subscription_period_start_date' =>  $m->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y'),
                 ];
 
 
-            // return new App\Mail\MembershipRenewal($details);
+            return new App\Mail\MembershipRenewal($details);
 
-           dispatch(new SendMembershipRenewalEmail($details));
+           //dispatch(new SendMembershipRenewalEmail($details));
 
         });
 

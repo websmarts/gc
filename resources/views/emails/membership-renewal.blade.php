@@ -25,7 +25,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="height:60px; text-align: center">
-                                                    <p style="font-size:110%; font-weight:bold">Membership renewal notice for the period ending {{$details['subscription_period_end_date'] }}</p>
+                                                    <p style="font-size:110%; font-weight:bold">Membership renewal notice <br>for the period ending {{$details['subscription_period_end_date'] }}</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -36,7 +36,8 @@
                                                                 <td style="width:20px">&nbsp;</td>
                                                                 <td>
                                                                     <p>Dear {{ $details['primary_contact'] }},</p>
-                                                                    <p>Just letting you know that the {{ $details['membership_name'] }} membership with {{ $details['organisation_name'] }} will expire {{ $details['subscription_period_end_date'] }}</p>
+                                                                    <p>Just letting you know that {{ $details['organisation_name'] }} membership subscriptions are now due for the 12 month period starting {{$details['subscription_period_start_date']}} and ending on {{$details['subscription_period_end_date']}}.</p>
+                                                                    <p>We have been very late in sending out renewals in the past and are very excited that this new GroupCare system will keep us on track!</p>  
 
                                                                     <p style="line-height:2em; text-align: center">To renew your membership <br> 
                                                                     <a style="font-size:110%" href="{{ route('membership-renewal',['membershipIdHash'=>$details['membership_id_hash']]) }}">visit our membership renewal page</a> <br>

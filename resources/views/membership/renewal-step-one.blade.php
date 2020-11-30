@@ -162,7 +162,7 @@
                         // "X-CSRF-Token": "{{ csrf_token() }}",
                     },
                 }).then(function(res) {
-                    console.log(res.data);
+                    // console.log(res.data);
                     //return res.json(); // fetch
                     return res.data; // axios
                 }).then(function(data) {
@@ -170,8 +170,15 @@
                     return data.orderID; // Use the same key name for order ID on the client and server
                 })
             },
+            onError: function (data) {
+                alert('An unexpected error occurred. Please try again.');
+
+                window.location.reload();
+
+
+            },
             onCancel: function(data) {
-                console.log('onCancel', data);
+                //console.log('onCancel', data);
                 return axios('{{ route("paypal-cancel") }}', {
                     method: 'post',
                     headers: {
@@ -195,8 +202,8 @@
                 console.log('onReturn', data);
             },
             onApprove: function(data) {
-                console.log('onApprove');
-                console.log(data);
+                //console.log('onApprove');
+                //console.log(data);
                 return axios('{{ route("capture-paypal-membership-renewal-payment") }}', {
                     method: 'post',
                     headers: {
@@ -213,11 +220,11 @@
                     //     orderID: data.orderID
                     // })
                 }).then(function(res) {
-                    console.log('stepx', res);
+                    //console.log('stepx', res);
                     //return res.json(); // fetch
                     return res.data; //axios
                 }).then(function(details) {
-                    console.log('stepy', details);
+                    //console.log('stepy', details);
 
                     // Redirect to payment received confirmation page
 

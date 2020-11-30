@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Membership;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Utils\PayPalGetOrder;
+
 use Illuminate\Support\Carbon;
 use App\Utils\PayPalCreateOrder;
 use App\Utils\PayPalCaptureOrder;
@@ -85,10 +85,7 @@ class PayPalController extends Controller
         // return $response->result->id;
     }
 
-    // public function get(Request $request)
-    // {
-    //     PayPalGetOrder::getOrder($request->orderID);
-    // }
+    
 
     public function capture(Request $request)
     {
@@ -96,11 +93,13 @@ class PayPalController extends Controller
         // Need to get the organisation so we can get the paypal credentials
 
         // retrieve the Transaction from setup so we can get the membershipId
-        Log::info('capture request',['request'=> $request]);
+        // Log::info('capture request',['request'=> $request]);
         $transaction = Transaction::where('processors_transaction_id',$request->orderID)->latest()->first();
-        Log::info('capture transaction',['transaction'=> $transaction]);
+        // Log::info('capture transaction',['transaction'=> $transaction]);
         $this->membership = Membership::findOrFail($transaction->membership_id);
-        Log::info('capture membership',['membership'=> $this->membership]);
+
+
+        // Log::info('capture membership',['membership'=> $this->membership]);
         
         $response = PayPalCaptureOrder::captureOrder($request->orderID, $this->getCredentials());
 
@@ -121,14 +120,14 @@ class PayPalController extends Controller
 
         }
         
-        Log::info('capture response',['response'=> $response]);
+        // Log::info('capture response',['response'=> $response]);
         return response()->json($response->result);
     }
 
     public function paypalReturn()
     {
         // TODO handle payPal return here??
-        dd(['paypal_return',request()->all()]);
+        //dd(['paypal_return',request()->all()]);
     }
     public function paypalCancel(Request $request)
     {
