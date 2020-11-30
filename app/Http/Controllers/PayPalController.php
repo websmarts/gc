@@ -133,8 +133,13 @@ class PayPalController extends Controller
 
         
 
-        if (!Transaction::where('processors_transaction_id', $request->token)->forceDelete()) {
+        if (!$transaction = Transaction::where('processors_transaction_id', $request->token)->forceDelete()) {
             return false;
+        }
+        if($request->isMethod('get')){
+            session()->flash('message','PayPal request cancelled');
+            return redirect()
+            ->route('membership-renewal',['membershipIdHash'=>app()->hasher($transaction->membership_id)]);
         }
         return true;
     }
