@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Membership;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MembershipRenewalController extends Controller
 {
@@ -85,6 +87,8 @@ class MembershipRenewalController extends Controller
         // record they selected offline
         $membership = Membership::with('members','members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
 
+        $membership->note = 'Selected pay offline renewal option ' . Carbon::now()->format('d-m-Y') ."\r\n" . $membership->note;
+        $membership->save();
 
         // display offline renewal page details
 

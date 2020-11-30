@@ -23,7 +23,8 @@ class Membership extends Model
         'name',
         'membership_type_id',
         'start_date',
-        'status'
+        'status',
+        'note'
     ];
 
     protected $appends = ['latestRenewalIssuedDate','latestRenewalPaymentDate'];
@@ -74,6 +75,8 @@ class Membership extends Model
         return $this->hasMany('App\Models\Transaction', 'membership_id', 'id')
             ->where(['regarding' => 'membership renewal', 'type' => 'invoice']);
     }
+
+    
 
     /**
      * Helpers
