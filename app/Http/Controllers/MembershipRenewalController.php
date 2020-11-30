@@ -92,7 +92,7 @@ class MembershipRenewalController extends Controller
 
         // display offline renewal page details
 
-        return view('membership.renew-offline-details',compact('membership'));
+        return view('membership.renew-offline-details',compact('membership','membershipIdHash'));
 
     }
 }

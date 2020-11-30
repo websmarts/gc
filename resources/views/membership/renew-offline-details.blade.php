@@ -1,5 +1,5 @@
 <x-guest-layout>
-
+<div class="p-4"><x-link.text to="{{ route('membership-renewal',['membershipIdHash'=>$membershipIdHash]) }}">Back to Membership renewal page</x-link.text></div>
     
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 ">

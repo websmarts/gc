@@ -21,7 +21,7 @@ class MembershipRenewal extends Mailable
      */
     public function __construct($details)
     {
-       Log::info(['construct',$details]);
+       // Log::info(['construct',$details]);
         $this->details = $details;
     }
 
@@ -32,7 +32,7 @@ class MembershipRenewal extends Mailable
      */
     public function build()
     {
-        return $this->from('mail@ndlg.org.au', 'NDLG')
+        return $this->from('renewals@groupcare.net.au', 'Membership renewal notice')
         ->subject('Membership renewal due notice')
         ->view('emails.membership-renewal');
     }

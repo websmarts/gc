@@ -61,3 +61,10 @@
                 </div>
                 <x-input.error for="address.postcode" />
             </x-input.group>
+
+            <x-input.group class="w-1/2" for="bank_account_details" label="Bank account details">
+                <div style="width:32em">
+                    <x-input.textarea id="bank_account_details" wire:model.defer='organisation.bank_account_details'></x-input.textarea>
+                </div>
+                <x-input.error for="organisation.bank_account_details" />
+            </x-input.group>

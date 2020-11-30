@@ -20,6 +20,7 @@ class OrganisationProfileEdit extends Component
         'organisation.abn' => 'required',
         'organisation.gst_registered' => 'required',
         'organisation.phone' => 'required',
+        'organisation.bank_account_details'=>'sometimes',
         'address.address1' => 'required',
         'address.address2' => 'nullable',
         'address.city' => 'required',

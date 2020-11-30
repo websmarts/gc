@@ -27,7 +27,9 @@
                                 {{ $membership->name }}
                             </h3>
                             <p class="mt-6 text-base leading-6 text-gray-500">
-                                {{ $membership->membershipType->organisation->name }} membership subscriptions are now due for the 12 months period starting 01-07-2020 and ending on 30-06-2021
+                                {{ $membership->membershipType->organisation->name }} membership subscriptions are now due for the 12 months period starting 
+                                {{ $membership->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y') }} 
+                                and ending on {{ $membership->membershipType->currentSubscriptionPeriod()->end_date->addDay(-1)->format('d-m-Y')}}
                                 <div class="mt-8">
                                     <div class="flex items-center">
                                         <h4 class="flex-shrink-0 pr-4 bg-white text-sm leading-5 tracking-wider font-semibold uppercase text-indigo-600">
