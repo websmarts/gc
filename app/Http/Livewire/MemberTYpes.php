@@ -4,7 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 
-class MemberTypes extends Component
+class MemberType extends Component
 {
     public function render()
     {

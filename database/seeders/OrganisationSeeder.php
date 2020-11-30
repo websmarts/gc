@@ -23,11 +23,16 @@ class OrganisationSeeder extends Seeder
             'uuid'=>Str::uuid(),
             'name'=> $name,
             'slug'=> Str::slug($name.'-'),
-            'address_id' => Address::factory(1)->create()->first()->id,
+            'address_id' => Address::create([
+                'address1'=>'P.O. Box 68',
+                'city' => 'Neerim South',
+                'postcode' => '3831',
+                'state_id' => 7,
+            ])->id,
             'gst_registered' => 1,
-            'abn' => '98765456778',
-            'phone' => '56567788',
-            'bank_account_details'=>'branch 006633 acct #1234567',
+            'abn' => '18 186 920 582',
+            'phone' => '',
+            'bank_account_details'=>'Bendigo Bank Branch - BSB 633 108 A/c No: 1095 13424',
         ]);
         $org->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
         $org->settings()->merge([
@@ -38,13 +43,13 @@ class OrganisationSeeder extends Seeder
             ]);
 
         
-        for($n = 0; $n <10; $n++){
-            Organisation::factory(1)
-            ->create(['address_id'=>Address::factory(1)->create()->first()->id])
-            ->first()
-            ->managers()
-            ->attach(User::find(rand(2,50)));
-        }
+        // for($n = 0; $n <10; $n++){
+        //     Organisation::factory(1)
+        //     ->create(['address_id'=>Address::factory(1)->create()->first()->id])
+        //     ->first()
+        //     ->managers()
+        //     ->attach(User::find(rand(2,50)));
+        // }
             
             
         

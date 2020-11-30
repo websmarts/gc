@@ -26,6 +26,8 @@ class Membership extends Model
         'status'
     ];
 
+    protected $appends = ['latestRenewalIssuedDate','latestRenewalPaymentDate'];
+
 
     protected $dispatchesEvents = [
         'deleted' => MembershipWasDeleted::class,
@@ -39,11 +41,11 @@ class Membership extends Model
     }
 
     // Accessors
-    public function getLatestRenewalIssuedDateProperty()
+    public function getLatestRenewalIssuedDateAttribute()
     {
        if($renewal = $this->latestRenewalNoticeQuery()->first()) return $renewal->issued_date;
     }
-    public function getLatestRenewalRenewalPaymentDateProperty()
+    public function getLatestRenewalPaymentDateAttribute()
     {
        if($renewal = $this->latestRenewalPaymentQuery()->first()) return $renewal->when_received;
     }

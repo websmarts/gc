@@ -21,21 +21,8 @@ class OrganisationMembershipTypeSeeder extends Seeder
         {
             MembershipType::create([
                 'organisation_id' => $org->id,
-                'name' => 'Individual',
-                'description' => 'Single person membership',
-                'subscription_months' => 12,
-                'max_people' => 1,
-                'prorate_signup_fee' => 0,
-                'grace_period_days' => 90,
-                'membership_fee' => 2000,
-                'renewal_month' => 7
-
-            ]);
-
-            MembershipType::create([
-                'organisation_id' => $org->id,
-                'name' => 'Family',
-                'description' => 'Family membership',
+                'name' => 'Standard',
+                'description' => 'Standard group membership',
                 'subscription_months' => 12,
                 'max_people' => 6,
                 'prorate_signup_fee' => 0,
@@ -44,6 +31,19 @@ class OrganisationMembershipTypeSeeder extends Seeder
                 'renewal_month' => 7
 
             ]);
+
+            // MembershipType::create([
+            //     'organisation_id' => $org->id,
+            //     'name' => 'Family',
+            //     'description' => 'Family membership',
+            //     'subscription_months' => 12,
+            //     'max_people' => 6,
+            //     'prorate_signup_fee' => 0,
+            //     'grace_period_days' => 90,
+            //     'membership_fee' => 2500,
+            //     'renewal_month' => 7
+
+            // ]);
         }
     }
 }

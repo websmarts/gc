@@ -22,7 +22,15 @@ class MembershipRenewalController extends Controller
         }
        
         
-        $membership = Membership::findOrFail($hasher[0]);
+        $membership = Membership::withTrashed()->findOrFail($hasher[0]);
+
+        // Check if membership has already been deleted
+        if($membership->deleted_at){
+            session()->flash('message', 'Membership, '.$membership->name .' is no longer active');
+            return redirect('/');
+        }
+
+
 
         // Check if membership is already financial
         if($membership->isCurrentlyFinancial()){
@@ -57,6 +65,30 @@ class MembershipRenewalController extends Controller
     
         
         return view('membership.renewal-step-one',['membership'=>$membership,'onlinePayBy'=>$onlinePayBy]);
+
+    }
+
+    public function confirm($membershipIdHash){
+
+        // display a view with:
+        // Confirmation message
+        // Current membership details
+        // and offer option to update
+
+        $membership = Membership::with('members','members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
+
+        return view('membership.renewal-confirmed', compact('membership'));
+    }
+
+    public function offline($membershipIdHash)
+    {
+        // record they selected offline
+        $membership = Membership::with('members','members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
+
+
+        // display offline renewal page details
+
+        return view('membership.renew-offline-details',compact('membership'));
 
     }
 }

@@ -126,6 +126,7 @@ expert speakers;
 
                                         </div>
                                     </div>
+                                    <div id="processingMessage" class="text-lg">processing ...</div>
                                     <div class="mt-4 ml-4 mr-4">
                                         <div id="paypal-button-container"></div>
                                     </div>
@@ -172,10 +173,14 @@ expert speakers;
 
 
     <script>
+        var processingMessage = document.getElementById('processingMessage');
+        processingMessage.style.display = 'none';
+
+        
         paypal.Buttons({
 
             createOrder: function() {
-
+                processingMessage.style.display = 'block';
                 return axios('{{ route("membership-renewal-payment",["membership"=>$membership->idHash]) }}', {
                     method: 'post',
                     headers: {
@@ -193,6 +198,13 @@ expert speakers;
                     return data.orderID; // Use the same key name for order ID on the client and server
                 })
             },
+            onCancel: function(data){
+                console.log('onCancel',data);
+            },
+            onReturn: function(data){
+                console.log('onCancel',data);
+            },
+
             onApprove: function(data) {
                 //console.log('onApprove');
                 //console.log(data);

@@ -1,7 +1,7 @@
 <x-guest-layout>
 
     @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
-    <script src="https://www.paypal.com/sdk/js?client-id={{$onlinePayBy->clientID}}&buyer-country=AU&locale=en_AU&currency=AUD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{$onlinePayBy->clientID}}&buyer-country=AU&locale=en_AU&currency=AUD" data-order-id="{{$membership->idHash}}"></script>
     @endif
 
     <div class="bg-gray-100">
@@ -110,7 +110,7 @@
                             <div class="flex-grow lg:flex  justify-between ">
                                 @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
                                 <div class="lg:w-1/2 m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
-    <div style="display:none" id="processing_indicator" >Processing payment request...</div>
+                                    <div style="display:none" id="processing_indicator">Processing payment request...</div>
                                     <div class="mt-4 ml-4 mr-4">
                                         <div id="paypal-button-container"></div>
                                     </div>
@@ -124,7 +124,7 @@
 
                                 <div class="lg:w-1/2  p-10  m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
                                     <div class="text-center mt-8 mb-8">
-                                        <x-link.button class="text-white">Pay using offline options</span></x-link.button>
+                                        <x-link.button to="{{ route('membership-renew-offline',['membershipIdHash'=>$membership->idHash]) }}" class="text-white">Pay using offline options</span></x-link.button>
                                     </div>
 
 
@@ -138,7 +138,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" p-4 text-center">If you would wish to cancel your membership <a class="font-extrabold" href="{{ route('cancel-membership',['membership'=>$membership->idHash]) }}">click here</a></div>
+                        <div class=" p-4 text-center">If you would wish to cancel your membership <a class="font-extrabold" href="{{ route('cancel-membership',['membershipIdHash'=>$membership->idHash]) }}">click here</a></div>
                     </div>
                 </div>
             </div>
@@ -147,7 +147,6 @@
 
     @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
     <script>
-
         var processing = document.getElementById("processing_indicator");
 
         paypal.Buttons({
@@ -171,6 +170,30 @@
                     return data.orderID; // Use the same key name for order ID on the client and server
                 })
             },
+            onCancel: function(data) {
+                console.log('onCancel', data);
+                return axios('{{ route("paypal-cancel") }}', {
+                    method: 'post',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        // "X-Requested-With": "XMLHttpRequest",
+                        // "X-CSRF-Token": "{{ csrf_token() }}",
+                    },
+                    data: {
+                        orderID: data.orderID
+                    }
+                    // fetch sends data via body see below
+                    // body: JSON.stringify({
+                    //     orderID: data.orderID
+                    // })
+                }).then(function(res) {
+                    processing.style.display = "none";
+                })
+            },
+            onReturn: function(data) {
+                console.log('onReturn', data);
+            },
             onApprove: function(data) {
                 console.log('onApprove');
                 console.log(data);
@@ -190,17 +213,21 @@
                     //     orderID: data.orderID
                     // })
                 }).then(function(res) {
-                    //console.log(res);
+                    console.log('stepx', res);
                     //return res.json(); // fetch
                     return res.data; //axios
                 }).then(function(details) {
-                    //console.log(details);
+                    console.log('stepy', details);
 
-                    // Redirect to payment received conformation page
+                    // Redirect to payment received confirmation page
 
-                    processing.style.display = "none"
+                    // processing.style.display = "none"
 
-                    alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
+                    // alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
+
+                    
+                    window.location.replace("{{route('membership-renewal-confirm',['membershipIdHash'=>$membership->idHash])}}");
+                    
 
                 })
             }

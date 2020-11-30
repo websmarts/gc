@@ -78,8 +78,8 @@
                 <x-table.cell>
 
 
-                    @if($membership->latestRenewalNoticeDate)
-                    {{ $membership->latestRenewalNoticeDate->tz('Australia/Melbourne')->format('d-m-Y') }}
+                    @if($membership->latestRenewalIssuedDate)
+                    {{ $membership->latestRenewalIssuedDate->tz('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
 
                 </x-table.cell>

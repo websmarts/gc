@@ -19,11 +19,8 @@ class RoleOptionsSeeder extends Seeder
             'Vice President/Vice Chair',
             'Secretary',
             'Treasurer',
-            'Board/Committee - general member',
-            'Staff/Contractor',
-            'Supplier/Service provider',
+            'Board/Committee general member',
             'Other',
-
         ];
 
         foreach($roles as $role)

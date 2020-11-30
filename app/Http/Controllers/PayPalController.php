@@ -125,12 +125,14 @@ class PayPalController extends Controller
     public function paypalReturn()
     {
         // TODO handle payPal return here??
-        dd(request()->all());
+        dd(['paypal_return',request()->all()]);
     }
-    public function paypalCancel()
+    public function paypalCancel(Request $request)
     {
-        // TODO handle paypal cancel
-        dd(request()->all());
+        if(!Transaction::where('processors_transaction_id',$request->orderID)->forceDelete()){
+            return false;
+        }
+        return true;
     }
 
     private function getCredentials()

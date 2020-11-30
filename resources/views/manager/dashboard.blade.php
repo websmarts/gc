@@ -98,6 +98,37 @@
         </div>
       </div>
     </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+            <!-- Heroicon name: users -->
+            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">
+                Organisation Committee/Board Positions
+              </dt>
+              <dd class="flex items-baseline">
+                <div class="text-xs leading-8 font-semibold text-gray-900">
+
+                @forelse(selectedOrganisation()->positions as $position)
+                  <div>{{ $position->role->role }}:<br>{{$position->contact->name}}<hr></div>
+                @empty
+                No positions filled out yet - to fix update Org positions
+                @endforelse
+                </div>
+                
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

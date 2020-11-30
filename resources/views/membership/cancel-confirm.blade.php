@@ -1,8 +1,9 @@
 <x-guest-layout>
 
-    
-        
-<div class="p-8 font-bold">We are sorry to see you go ... The primary contact has been sent an email so they can confirm the membership should be deleted.</div>
+
+    <div class="text-center">
+        <div class="p-8 w-1/2 text-2xl font-bold">The membership has been deleted</div>
+    </div>
 
 
 </x-guest-layout>

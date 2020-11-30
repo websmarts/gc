@@ -25,7 +25,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="height:60px; text-align: center">
-                                                    <p style="font-size:110%; font-weight:bold">Membership renewal notice for 2020/21</p>
+                                                    <p style="font-size:110%; font-weight:bold">Membership renewal notice for the period ending {{$details['subscription_period_end_date'] }}</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -38,8 +38,14 @@
                                                                     <p>Dear {{ $details['primary_contact'] }},</p>
                                                                     <p>Just letting you know that the {{ $details['membership_name'] }} membership with {{ $details['organisation_name'] }} will expire {{ $details['subscription_period_end_date'] }}</p>
 
-                                                                    <p style="line-height:2em; text-align: center">To renew your membership please<br> 
-                                                                    <a style="font-size:110%" href="{{ route('membership-renewal',['membershipIdHash'=>$details['membership_id_hash']]) }}">visit our subscription renewal page</a> <br>
+                                                                    <p style="line-height:2em; text-align: center">To renew your membership <br> 
+                                                                    <a style="font-size:110%" href="{{ route('membership-renewal',['membershipIdHash'=>$details['membership_id_hash']]) }}">visit our membership renewal page</a> <br>
+                                                                    </p>
+
+                                                                    <p style="line-height:2em; text-align: center">Or</p>
+
+                                                                    <p style="line-height:2em; text-align: center">If you wish to cancel your membership <br> 
+                                                                    <a style="font-size:110%" href="{{ route('cancel-membership',['membershipIdHash'=>$details['membership_id_hash']]) }}">use this link to cancel your membership </a> <br>
                                                                     </p>
 
 

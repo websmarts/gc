@@ -13,6 +13,7 @@ class PositionsRegister extends Component
     public $organisation;
     public $roleOptions =[];
     public $role_id;
+    public $message ='Select the position before searching for person to fill it';
 
     
     public $search;
@@ -28,10 +29,7 @@ class PositionsRegister extends Component
 
     }
 
-    public function updatedSearch($search)
-    {
-        
-    }
+    
 
     public function getContactsProperty()
     {
@@ -56,9 +54,15 @@ class PositionsRegister extends Component
 
             OrganisationRole::create($data);
 
-            $this->role_id = 0;
+            $this->role_id = 0;// REset the role selector
+            $this->search = ''; // Clear the search box
+
 
         // add the organisation_role 
+    }
+    public function remove($positionId)
+    {
+        OrganisationRole::find($positionId)->delete();
     }
     
     

@@ -31,6 +31,10 @@ use App\Http\Controllers\OrganisationSelectorController;
 
 Route::get('/view-inspector', [ViewInspectorController::class, 'index']);
 
+Route::get('privacy',function(){
+    return view('privacy');
+});
+
 /**
  * EXPERIMENTAL Members moving to groupcare register here
  */
@@ -46,6 +50,7 @@ Route::get('member/registration/for/{slug}',function($slug){
  */
 Route::middleware(['guest:contact,web'])->get('/', function () {
     return view('welcome');
+    // return redirect('/login');
 })->name('welcome');
 
 
@@ -81,9 +86,14 @@ Route::get('confirm-renewal-payment',function(){
     return view('membership.confirm-renewal-payment');
 })->name('confirm-renewal-payment');
 
-Route::get('cancel-membership/{membership}',function($membership){
-    $membership = Membership::findOrFail(app()->hasher->decode($membership));
+Route::get('cancel-membership/{membershipIdHash}',function($membershipIdHash){
+
+   
+    if($membership = Membership::find(app()->hasher->decode($membershipIdHash)[0])){
+        $membership->delete();
+    }
     // Set membership status to pending-deleteion confirmation
+    
 
     // Fire membership canceled event - emails primary contact a confirmation email
 
@@ -96,8 +106,10 @@ Route::post('membership-renewal-payment/{membership}',[PayPalController::class, 
 Route::post('capture-paypal-transaction',[PayPalController::class, 'capture'])->name('capture-paypal-membership-renewal-payment');
 //Route::get('get-paypal-transaction',[PayPalController::class, 'get'])->name('get-paypal-transaction');
 Route::get('paypal-return',[PayPalController::class, 'paypalReturn'])->name('paypal-return');
-Route::get('paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel');
+Route::post('paypal-cancel',[PayPalController::class, 'paypalCancel'])->name('paypal-cancel');
 
+Route::get('membership-renewal-confirmed/{membershipIdHash}',[MembershipRenewalController::class,'confirm'])->name('membership-renewal-confirm');
+Route::get('renew-offline/{membershipIdHash}',[MembershipRenewalController::class,'offline'])->name('membership-renew-offline'); 
 /**
  * Single Sign On or Contact guarded route group
  * TODO add middleware and routes

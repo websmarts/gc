@@ -99,7 +99,7 @@ class Organisation extends Model
     public function positions()
     {
         //return $this->belongsToMany(RoleOption::class, 'organisation_roles', 'organisation_id', 'role_id')->withPivot('contact_id');
-        return $this->hasMany(OrganisationRole::class);
+        return $this->hasMany(OrganisationRole::class)->orderBy('role_id','asc');
     }
 
     public function members($primary_contacts_only = false)
