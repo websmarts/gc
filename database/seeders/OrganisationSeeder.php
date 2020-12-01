@@ -32,7 +32,7 @@ class OrganisationSeeder extends Seeder
             'gst_registered' => 1,
             'abn' => '18 186 920 582',
             'phone' => '',
-            'bank_account_details'=>'Bendigo Bank Branch - BSB 633 108 A/c No: 1095 13424',
+            'bank_account_details'=>'Bendigo Bank Branch - BSB 633 000 A/c No: 1095 13424',
         ]);
         $org->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
         $org->settings()->merge([
