@@ -6,6 +6,7 @@ use App\Models\Membership;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MembershipRenewalController extends Controller
 {
@@ -42,32 +43,45 @@ class MembershipRenewalController extends Controller
 
 
 
-        $onlinePayBy = (object)[];
         
-        if($settings = (object) $membership->membershipType->organisation->settings) {
-            
-            if(isSet($settings->payment_handler) && strtoupper(trim($settings->payment_handler)) == 'PAYPAL'){
-                $onlinePayBy->name = 'PAYPAL';
-                if( $settings->PAYPAL_USE_SANDBOX == true 
-                    && isSet($settings->PAYPAL_SANDBOX_CLIENT_ID)
-                    && !empty($settings->PAYPAL_SANDBOX_CLIENT_ID)){
-                    $onlinePayBy->clientID = $settings->PAYPAL_SANDBOX_CLIENT_ID;
-                } elseif($settings->PAYPAL_USE_SANDBOX !== true 
-                        && isSet($settings->PAYPAL_CLIENT_ID)
-                        && !empty($settings->PAYPAL_CLIENT_ID)){
-                        $onlinePayBy->clientID = $settings->PAYPAL_CLIENT_ID;
-
-                }
-            }
-        }
-
         
         // TODO check if hashId has expiry attached and if expired or not
         //[id, time_has_was_made, expiry_hours]
     
         
-        return view('membership.renewal-step-one',['membership'=>$membership,'onlinePayBy'=>$onlinePayBy]);
+        return view('membership.renewal-step-one',['membership'=>$membership]);
 
+    }
+
+    public function recordPayment($membershipIdHash){
+
+        $hasher = app('hasher')->decode($membershipIdHash);
+        $membership = Membership::findOrFail($hasher[0]);
+       
+     $details = request()->details;
+
+       $transactionData = [
+        'type' =>'payment', // eg invoice, refund, adjustment, etc
+        'regarding' =>'membership renewal', // eg [membership/account] renewal
+        'membership_id' =>$membership->id, // eg membership_id
+        'organisation_id' =>$membership->membershipType->organisation_id, // organisation_id
+        'gross_amount_charged' =>$membership->membershipType->membershipFeeAsDollars, // gross invoice amount
+        'processors_transaction_id' =>$details['id'], // payment gateway transaction id
+        'response_status_code' => $details['status'], // eg 201 = all good
+        'payee_name' =>$details['payer']['name']['given_name'] .' '.$details['payer']['name']['surname'] ,
+        'gross_amount_paid' =>$details['purchase_units'][0]['amount']['value'], // the amount actuall charged to the payee
+        'when_received' => Carbon::now(), // timestamp 
+        'created_by' => 0, // user id if manually done or 0 = system
+        'note' =>'paypal renewal payment', // eg why adjustment was made
+    ];  
+     Transaction::create($transactionData);     
+
+
+
+        // details of paypal transaction in request->details.
+        Log::info(request()->details);
+
+        return ['status'=>'success'];
     }
 
     public function confirm($membershipIdHash){

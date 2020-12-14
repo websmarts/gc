@@ -34,7 +34,7 @@ class PayPalClient
             if($credentials['environment'] == 'production'){
 
                 // TODO uncomment the following line to activate live paypal
-                //return new ProductionEnvironment($clientId, $clientSecret);
+                return new ProductionEnvironment($clientId, $clientSecret);
             }
             
         

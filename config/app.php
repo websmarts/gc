@@ -178,6 +178,7 @@ return [
         App\Providers\JetstreamServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         App\Providers\HasherServiceProvider::class,
+        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
         
     ],
 
@@ -231,6 +232,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Hasher' => App\Utils\HasherFacade::class,
+        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
 
         
 

@@ -1,7 +1,9 @@
 <x-guest-layout>
 
-    @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
-    <script src="https://www.paypal.com/sdk/js?client-id={{$onlinePayBy->clientID}}&buyer-country=AU&locale=en_AU&currency=AUD" data-order-id="{{$membership->idHash}}"></script>
+    @if(env('PAYPAL_USE_SANDBOX'))
+    <script src="https://www.paypal.com/sdk/js?client-id={{env('PAYPAL_SANDBOX_CLIENT_ID')}}&currency=AUD" data-order-id="{{$membership->idHash}}"></script>
+    @else
+    <script src="https://www.paypal.com/sdk/js?client-id={{env('PAYPAL_LIVE_CLIENT_ID')}}&currency=AUD" data-order-id="{{$membership->idHash}}"></script>
     @endif
 
     <div class="bg-gray-100">
@@ -27,8 +29,8 @@
                                 {{ $membership->name }}
                             </h3>
                             <p class="mt-6 text-base leading-6 text-gray-500">
-                                {{ $membership->membershipType->organisation->name }} membership subscriptions are now due for the 12 months period starting 
-                                {{ $membership->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y') }} 
+                                {{ $membership->membershipType->organisation->name }} membership subscriptions are now due for the 12 months period starting
+                                {{ $membership->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y') }}
                                 and ending on {{ $membership->membershipType->currentSubscriptionPeriod()->end_date->addDay(-1)->format('d-m-Y')}}
                                 <div class="mt-8">
                                     <div class="flex items-center">
@@ -110,9 +112,9 @@
 
 
                             <div class="flex-grow lg:flex  justify-between ">
-                                @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
+
                                 <div class="lg:w-1/2 m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
-                                    
+
 
                                     <div class="ml-4 mr-4  text-center">Securely pay online via PayPal.<br>
                                         PayPal provides options to pay using a major credit card or via your own PayPal account if you already have one setup.
@@ -123,10 +125,10 @@
                                     </div>
 
                                 </div>
-                                @endif
+
 
                                 <div class="lg:w-1/2  p-10  m-4 rounded-lg shadow-sm overflow-hidden bg-teal-100 px-2 py-4 ">
-                                    
+
 
 
                                     <div class="ml-4 mr-4 text-center">Pay your membership using alternative means including:
@@ -149,101 +151,90 @@
         </div>
     </div>
 
-    @if(isSet($onlinePayBy->name) && $onlinePayBy->name == 'PAYPAL' && !empty($onlinePayBy->clientID))
+
+
     <script>
-        var processing = document.getElementById("processing_indicator");
+        var client_hash = '{{$membership->idHash}}';
 
-        paypal.Buttons({
+        var address_line_1 = '';
+        var address_line_2 = '';
+        var city ='';
+        var state='';
+        var postcode ='';
+    @if($membership->primaryContact()->address)
 
-            createOrder: function() {
-                processing.style.display = "block"
-                return axios('{{ route("setup-paypal-membership-renewal-payment",["membership"=>$membership->idHash]) }}', {
-                    method: 'post',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        // "X-Requested-With": "XMLHttpRequest",
-                        // "X-CSRF-Token": "{{ csrf_token() }}",
-                    },
-                }).then(function(res) {
-                    // console.log(res.data);
-                    //return res.json(); // fetch
-                    return res.data; // axios
-                }).then(function(data) {
-                    //console.log(data.orderID);
-                    return data.orderID; // Use the same key name for order ID on the client and server
-                })
-            },
-            onError: function (data) {
-                alert('An unexpected error occurred. Please try again.');
+        address_line_1 = '{{$membership->primaryContact()->address->address1 ? $membership->primaryContact()->address->address1 : ""}}';
+        address_line_2 = '{{$membership->primaryContact()->address->address2 ? $membership->primaryContact()->address->address2 : ""}}';
+        city ='{{$membership->primaryContact()->address->city ? $membership->primaryContact()->address->city : ""}}';
+        postcode ='{{$membership->primaryContact()->address->postcode ? $membership->primaryContact()->address->postcode : ""}}';
+        @if($membership->primaryContact()->address->state->id == 7 )
+        state = 'VIC';
+        @endif
 
-                window.location.reload();
-
-
-            },
-            onCancel: function(data) {
-                //console.log('onCancel', data);
-                return axios('{{ route("paypal-cancel") }}', {
-                    method: 'post',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        // "X-Requested-With": "XMLHttpRequest",
-                        // "X-CSRF-Token": "{{ csrf_token() }}",
-                    },
-                    data: {
-                        token: data.orderID
-                    }
-                    // fetch sends data via body see below
-                    // body: JSON.stringify({
-                    //     orderID: data.orderID
-                    // })
-                }).then(function(res) {
-                    processing.style.display = "none";
-                })
-            },
-            onReturn: function(data) {
-                console.log('onReturn', data);
-            },
-            onApprove: function(data) {
-                //console.log('onApprove');
-                //console.log(data);
-                return axios('{{ route("capture-paypal-membership-renewal-payment") }}', {
-                    method: 'post',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        // "X-Requested-With": "XMLHttpRequest",
-                        // "X-CSRF-Token": "{{ csrf_token() }}",
-                    },
-                    data: {
-                        orderID: data.orderID
-                    }
-                    // fetch sends data via body see below
-                    // body: JSON.stringify({
-                    //     orderID: data.orderID
-                    // })
-                }).then(function(res) {
-                    //console.log('stepx', res);
-                    //return res.json(); // fetch
-                    return res.data; //axios
-                }).then(function(details) {
-                    //console.log('stepy', details);
-
-                    // Redirect to payment received confirmation page
-
-                    // processing.style.display = "none"
-
-                    // alert('Transaction funds captured from ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
-
-                    
-                    window.location.replace("{{route('membership-renewal-confirm',['membershipIdHash'=>$membership->idHash])}}");
-                    
-
-                })
-            }
-        }).render('#paypal-button-container');
-    </script>
     @endif
+
+        
+        paypal.Buttons({
+            enableStandardCardFields: true,
+            createOrder: function(data, actions) {
+                //console.log(data);
+                return actions.order.create({
+                    intent: 'CAPTURE',
+                    payer: {
+
+                        address: {
+                            address_line_1: address_line_1,
+                            address_line_2: address_line_2,
+                            admin_area_2: city,
+                            admin_area_1: state,
+                            postal_code: postcode,
+                            country_code: 'AU'
+                        },
+                        email_address: '{{$membership->primaryContact()->email}}',
+
+                    },
+                    purchase_units: [{
+                        amount: {
+                            value: '{{$membership->membershipType->membershipFeeAsDollars}}',
+                            currency_code: 'AUD'
+                        },
+                        description: 'membership renewal',
+                        custom_id: client_hash,
+
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                // This function captures the funds from the transaction.
+                return actions.order.capture().then(function(details) {
+                    // This function shows a transaction success message to your buyer.
+                    // console.log(details,client_hash);
+                    //  alert('Transaction completed by ' + details.payer.name.given_name);
+                    
+
+                    // make ajax call to record completed transaction 
+                    return axios('{{ route("payment-complete",["membershipIdHash"=>$membership->idHash]) }}', {
+                    method: 'post',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        // "X-Requested-With": "XMLHttpRequest",
+                        // "X-CSRF-Token": "{{ csrf_token() }}",
+                    },
+                    data: {
+                        details: details
+                    }
+                }).then(function(res) {
+                     //console.log(res);
+                    window.location.replace("{{route('membership-renewal-confirm',['membershipIdHash'=>$membership->idHash])}}");
+                    // redirect to all-done
+                })
+
+                   
+                });
+            }
+        }).render("#paypal-button-container");
+    </script>
+
 
 </x-guest-layout>

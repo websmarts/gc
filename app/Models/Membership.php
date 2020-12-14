@@ -73,7 +73,7 @@ class Membership extends Model
     public function renewalTransactions()
     {
         return $this->hasMany('App\Models\Transaction', 'membership_id', 'id')
-            ->where(['regarding' => 'membership renewal', 'type' => 'invoice']);
+            ->where(['regarding' => 'membership renewal', 'type' => 'payment']);
     }
 
     
