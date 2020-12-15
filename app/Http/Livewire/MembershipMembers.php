@@ -93,6 +93,7 @@ class MembershipMembers extends Component
         // Check if max people has been reached
         if ($this->membership->membershipType->max_people > $this->membership->members->count()) {
             $this->editing = Member::make();
+            $this->address = Address::make();
 
             $this->showModal = true;
         }
