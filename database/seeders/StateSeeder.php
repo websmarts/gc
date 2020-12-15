@@ -15,19 +15,20 @@ class StateSeeder extends Seeder
     public function run()
     {
         $states = [
-            'Australian Capital Territory',
-            'New South Wales',
-            'Northern Territory',
-            'Queensland',
-            'South Australia',
-            'Tasmania',
-            'Victoria', 
-            'Western Australia',
+            'Australian Capital Territory'=>'ACT',
+            'New South Wales'=>'NSW',
+            'Northern Territory'=>'NT',
+            'Queensland'=>'QLD',
+            'South Australia'=>'SA',
+            'Tasmania'=>'TAS',
+            'Victoria'=>'VIC', 
+            'Western Australia'=>'WA',
         ];
         
-        foreach ($states as $state){
+        foreach ($states as $state=>$code){
             DB::table('states')->insert([
-            'name' => $state
+            'name' => $state,
+            'code' => $code,
         ]);
 
         }

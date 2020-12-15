@@ -80,6 +80,39 @@
                     <x-input.error for="is_primary_contact" />
                 </x-input.group>
 
+                <!-- Address inputs -->
+                <x-input.group for="address1" label="Address 1">
+                    <x-input.text wire:model="address.address1" id="address1" placeholder="Address 1"></x-input.text>
+                    <x-input.error for="address.address1" />
+                </x-input.group>
+
+                <x-input.group for="address2" label="Address 2">
+                    <x-input.text wire:model="address.address2" id="address2" placeholder="Address 2"></x-input.text>
+                    <x-input.error for="address.address2" />
+                </x-input.group>
+
+                <x-input.group for="city" label="City">
+                    <x-input.text wire:model="address.city" id="city" placeholder="City"></x-input.text>
+                    <x-input.error for="address.city" />
+                </x-input.group>
+
+                <x-input.group for="state" label="State">
+                <div style="width:18em">
+                    <x-input.select id="state" wire:model.defer='address.state_id'>
+                        <option value="">Select State...</option>
+                        @foreach($states as $state)
+                        <option value="{{$state->id}}">{{$state->name}}</option>
+                        @endforeach
+                    </x-input.select>
+                    <x-input.error for="address.state_id" />
+                </div>
+            </x-input.group>
+
+                <x-input.group for="postcode" label="Postcode">
+                    <x-input.text wire:model="address.postcode" id="postcode" placeholder="Postcode"></x-input.text>
+                    <x-input.error for="address.postcode" />
+                </x-input.group>
+
             </x-slot>
             <x-slot name="footer">
                 <div class="flex justify-between">

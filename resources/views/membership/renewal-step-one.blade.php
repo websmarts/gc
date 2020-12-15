@@ -167,9 +167,7 @@
         address_line_2 = '{{$membership->primaryContact()->address->address2 ? $membership->primaryContact()->address->address2 : ""}}';
         city ='{{$membership->primaryContact()->address->city ? $membership->primaryContact()->address->city : ""}}';
         postcode ='{{$membership->primaryContact()->address->postcode ? $membership->primaryContact()->address->postcode : ""}}';
-        @if($membership->primaryContact()->address->state->id == 7 )
-        state = 'VIC';
-        @endif
+        state = '{{$membership->primaryContact()->address->state ? $membership->primaryContact()->address->state->code : ""}}';
 
     @endif
 

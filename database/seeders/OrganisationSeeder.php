@@ -35,12 +35,13 @@ class OrganisationSeeder extends Seeder
             'bank_account_details'=>'Bendigo Bank Branch - BSB 633 000 A/c No: 1095 13424',
         ]);
         $org->first()->managers()->attach(User::select('id')->where('is_admin', 0)->first()->id,);
-        $org->settings()->merge([
-            'payment_handler'=>'paypal',
-            'PAYPAL_USE_SANDBOX' => true,
-            'PAYPAL_SANDBOX_CLIENT_ID' => 'AR_xRpQCuoq2b_n8sgoF3CCg7usHjAHMQwxJjSL6rdb2KNi8yU36F63lVl7jWiExxLW_jXOw5fgI9fdI',
-            'PAYPAL_SANDBOX_CLIENT_SECRET' => 'EO-9JT9ltiZ13Ddkmk7yWgM8YHLjX41Cb20WldpZr0_Jbl4Zldy4R5XIGlTSgq-0hYVVBjdJkIAdN0Gs'
-            ]);
+        
+        // $org->settings()->merge([
+        //     'payment_handler'=>'paypal',
+        //     'PAYPAL_USE_SANDBOX' => true,
+        //     'PAYPAL_SANDBOX_CLIENT_ID' => '',
+        //     'PAYPAL_SANDBOX_CLIENT_SECRET' => ''
+        //     ]);
 
         
         // for($n = 0; $n <10; $n++){

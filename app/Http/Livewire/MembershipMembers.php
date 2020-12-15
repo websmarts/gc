@@ -2,10 +2,13 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\State;
+use App\Models\Address;
 use Livewire\Component;
 use App\Models\Membership;
 use Illuminate\Support\Str;
 use App\Models\Contact as Member;
+use Illuminate\Support\Facades\Validator;
 
 class MembershipMembers extends Component
 {
@@ -15,8 +18,11 @@ class MembershipMembers extends Component
 
     public $membership;
 
+    public $states;
+
     public $editing; // member model for edit modal
     public $is_primary_contact = false;
+    public $address; // member address 
 
     public $showModal = false;
 
@@ -24,19 +30,63 @@ class MembershipMembers extends Component
 
     public function rules()
     {
-        return  $this->is_primary_contact ? [
-            'editing.name' => 'required',
-            'editing.email' => 'required|email',
-            'editing.phone' => 'required',
-            'is_primary_contact' => 'required'
+        if($this->is_primary_contact){
+            return  [
+                'editing.name' => 'required',
+                'editing.email' => 'required|email',
+                'editing.phone' => 'required',
+                'is_primary_contact' => 'required',
+                'address.address1' => 'required',
+                'address.address2' => 'sometimes',
+                'address.city' => 'required',
+                'address.postcode' => 'required',
+                'address.state_id' =>'required'
     
-        ] : [
-            'editing.name' => 'required',
-            'editing.email' => 'sometimes|required|email',
-            'editing.phone' => 'sometimes|required',
-            'is_primary_contact' => 'required'
-        ];
+        
+           ];
+
+        }
+         elseif (  !empty($this->address->address1) 
+                    || !empty($this->address->address2) 
+                    || !empty($this->address->city )
+                    || !empty($this->address->postcode)) {
+
+            return [
+                'editing.name' => 'required',
+                'editing.email' => 'sometimes|email',
+                'editing.phone' => 'sometimes',
+                'is_primary_contact' => 'required',
+                'address.address1' => 'required',
+                'address.address2' => 'sometimes',
+                'address.city' => 'required',
+                'address.postcode' => 'required',
+                'address.state_id' =>'required'
+    
+            ];
+        } else {
+            return [
+                'editing.name' => 'required',
+                'editing.email' => 'sometimes|email',
+                'editing.phone' => 'sometimes',
+                'is_primary_contact' => 'required',
+                'address.address1' => 'sometimes',
+                'address.address2' => 'sometimes',
+                'address.city' => 'sometimes',
+                'address.postcode' => 'sometimes',
+                'address.state_id' =>'sometimes'
+                
+    
+            ];
+        }
+        
+        
     }
+
+    public function mount(){
+        $this->states = State::get();
+    }
+
+    
 
     public function create()
     {
@@ -52,6 +102,19 @@ class MembershipMembers extends Component
     {
 
         $this->editing = $this->membership->members->where('uuid', $uuid)->first();
+
+        // get the address details - they nmaybe null
+        if(!$this->address = $this->editing->address){
+           
+            $this->address = Address::make([
+                'address1'=>'',
+                'address2'=>'',
+                'city'=>'',
+                'state_id'=> '',
+                'postcode'=>''
+            ]);
+        }
+        
     
         $this->is_primary_contact = $this->editing->pivot->is_primary_contact;
         $this->showModal = true;
@@ -73,6 +136,28 @@ class MembershipMembers extends Component
             $this->membership->members()->attach($this->editing->id, ['is_primary_contact' => $this->is_primary_contact]);
         } else {
             // we edited an existing member
+
+
+            
+
+            // if address save it
+            if($this->address->id){
+                // it must be an existing address as we have an address.id
+
+                // If address fields are blank then delete it as its not a whole lot of use
+                if (empty($this->address->address1) && empty($this->address->address2) && empty($this->address->city && empty($this->address->postcode))){
+                    $this->address->delete();
+                    $this->editing->address_id = null;
+                } else {
+                    // Its not all blank stuff so save the address
+                    $this->address->save();
+                }
+                
+            } elseif (!empty($this->address->address1) || !empty($this->address->address2) || !empty($this->address->city || !empty($this->address->postcode))){
+                $this->address->save();
+                // now $this-address will have an id so save that to this->editing
+                $this->editing->address_id = $this->address->id;
+            }
 
             $this->editing->save();
             $member = $this->membership->members->where('uuid', $this->editing->uuid)->first();
