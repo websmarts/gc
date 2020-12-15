@@ -94,6 +94,9 @@ class MembershipMembers extends Component
         if ($this->membership->membershipType->max_people > $this->membership->members->count()) {
             $this->editing = Member::make();
             $this->address = Address::make();
+            $this->is_primary_contact = 0;
+            $this->resetErrorBag();
+
 
             $this->showModal = true;
         }
@@ -106,18 +109,20 @@ class MembershipMembers extends Component
 
         // get the address details - they nmaybe null
         if(!$this->address = $this->editing->address){
+            $this->address = Address::make();
            
-            $this->address = Address::make([
-                'address1'=>'',
-                'address2'=>'',
-                'city'=>'',
-                'state_id'=> '',
-                'postcode'=>''
-            ]);
+            // $this->address = Address::make([
+            //     'address1'=>'',
+            //     'address2'=>'',
+            //     'city'=>'',
+            //     'state_id'=> '',
+            //     'postcode'=>''
+            // ]);
         }
         
     
         $this->is_primary_contact = $this->editing->pivot->is_primary_contact;
+        $this->resetErrorBag();
         $this->showModal = true;
     }
 
@@ -173,7 +178,7 @@ class MembershipMembers extends Component
                 $this->membership->members()->updateExistingPivot($otherMemberIds,['is_primary_contact'=>0]);
             }
         }
-
+        $this->resetErrorBag();
         $this->showModal = false;
     }
 
