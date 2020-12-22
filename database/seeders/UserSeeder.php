@@ -34,6 +34,15 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        User::factory(50)->create();
+        User::create([
+            'uuid' => Str::uuid(),
+            'is_admin' => 0,
+            'name' => 'Philip Darton',
+            'email' => 'darton@dcsi.net.au',
+            'email_verified_at' => date('Y-m-d H:i:s'),
+            'password' => Hash::make('password')
+        ]);
+
+        //User::factory(50)->create();
     }
 }

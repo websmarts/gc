@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Login;
+use App\Events\MembershipWasDeleted;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use App\Events\NewEmailAddressRecorded;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -19,9 +21,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        'App\Events\MembershipWasDeleted' => [
+        MembershipWasDeleted::class => [
             'App\Listeners\DeleteMembershipContacts',
             'App\Listeners\DeleteMembershipTransactions',
+        ],
+        NewEmailAddressRecorded::class => [
+            'App\Listeners\SendVerificationEmailLink'
         ],
     ];
 

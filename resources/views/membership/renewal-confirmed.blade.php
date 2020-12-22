@@ -3,7 +3,7 @@
 {{-- dump($membership) --}}
 <p class="text-2xl font-bold">Your membership has been renewed for another year</p>
 
-<p class="mb-4 mt-2">Please review the your current membership details below and contact us if any changes are required</p>
+<p class="mb-4 mt-2">Please review the your current membership details below and let us know if any changes are required</p>
 
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
   <div class="px-4 py-5 sm:px-6">

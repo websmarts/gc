@@ -6,7 +6,7 @@
 
         <div class="p-2 text-right">
             <a href="#" wire:click.prevent="create">
-                <x-icon.plus />Add non-member contact</a>
+                <x-icon.plus />Add contact</a>
         </div>
     </div>
 

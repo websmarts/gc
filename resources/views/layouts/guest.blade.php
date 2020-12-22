@@ -13,6 +13,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @livewireStyles
 
     <!-- Scripts -->
     <script src="{{ mix('/js/app.js') }}"></script>
@@ -69,7 +70,7 @@
             <x-link.text class="text-gray-100 text-sm p-2" to='/privacy'>Privacy statement</x-link.text>
         </div>
     </div>
-
+    @livewireScripts
 </body>
 
 </html>

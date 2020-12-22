@@ -16,12 +16,10 @@ class HasherServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the application services.
+     * Register the Hasher application services.
      */
     public function register()
     {
-        
-        
         $this->mergeConfigFrom(config_path('hasher.php'), 'hasher');
         $this->registerHasher();
     }

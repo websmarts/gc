@@ -1,8 +1,8 @@
-<x-member-layout>
+<x-guest-layout>
 
 
     <x-slot name="pagetitle">Member Registration</x-slot>
 
     <livewire:member-registration :uuid="$uuid" />
 
-</x-member-layout>
+</x-guest-layout>

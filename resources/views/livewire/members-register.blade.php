@@ -13,7 +13,8 @@
         </div>
 
         <div class="p-2 text-right">
-            <x-link.text to="{{ route('create.membership') }}"><x-icon.plus />Add membership</x-link.text>
+            <x-link.text to="{{ route('create.membership') }}">
+                <x-icon.plus />Add membership</x-link.text>
         </div>
 
 
@@ -22,7 +23,7 @@
 
     <x-table>
         <x-slot name="head">
-
+            <x-table.heading />
             <x-table.heading class="text-left">
                 <x-button.link wire:click="orderBy('name')" class="uppercase">Membership name</x-button.link>
             </x-table.heading>
@@ -44,7 +45,7 @@
                 @endif
 
             </x-table.heading>
-            <x-table.heading />
+
 
         </x-slot>
 
@@ -53,6 +54,9 @@
             @forelse($this->organisation->memberships as $membership)
 
             <x-table.row wire:loading.class="opacity-50" wire:key="{{ $loop->index }}">
+                <x-table.cell class="w/12 text-right">
+                    <x-button.link class="underline hover:no-underline" wire:click="edit({{ $membership->id }})">edit</x-button.link>
+                </x-table.cell>
 
                 <x-table.cell>{{ $membership->name }}
                     @if($membership->primaryContact() && !$membership->primaryContact()->verifiedEmailAddress())
@@ -71,8 +75,8 @@
 
 
                 </x-table.cell>
-                <x-table.cell>{{ $membership->members->count() }} <x-link.text to="{{ route('membership.members',['membership'=> $membership->id])}}">
-                    view</x-link.text>
+                <x-table.cell>{{ $membership->members->count() }} &nbsp;<x-link.text to="{{ route('membership.members',['membership'=> $membership->id])}}">
+                        edit</x-link.text>
                 </x-table.cell>
 
                 <x-table.cell>
@@ -95,7 +99,7 @@
                     {{ $membership->membershipType->daysIntoSubscription() }} days late
 
                     @elseif( $membership->isCurrentlyFinancial() )
-                    current
+                    Current
                     @endif
 
 
@@ -108,10 +112,7 @@
 
                 </x-table.cell>
 
-                <x-table.cell class="w/12 text-right">
 
-                    <x-button.link class="underline hover:no-underline" wire:click="edit({{ $membership->id }})">edit</x-button.link>
-                </x-table.cell>
 
             </x-table.row>
 
@@ -157,6 +158,16 @@
 
                 <x-input.group for="start_date" label="Start date" :error="$errors->first('proxy_start_date')">
                     <x-input.text id="start_date" wire:model.defer='proxy_start_date'></x-input.text>
+                </x-input.group>
+
+                <p>Add a renewal payment</p>
+                <x-input.group for="gross_amount_paid" label="Amount paid" :error="$errors->first('proxy_gross_amount_paid')">
+                    <x-input.text id="gross_amount_paid" wire:model='transaction.gross_amount_paid'></x-input.text>
+                </x-input.group>
+
+
+                <x-input.group for="note" label="Note" :error="$errors->first('proxy_note')">
+                    <x-input.text id="note" wire:model='transaction.note'></x-input.text>
                 </x-input.group>
 
 

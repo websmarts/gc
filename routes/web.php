@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\User;
+use App\Models\Contact;
 use App\Models\Membership;
+use Illuminate\Support\Str;
 use App\Models\Organisation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -13,8 +15,10 @@ use App\Http\Controllers\ImpersonatorController;
 use App\Http\Controllers\MembersImportController;
 use App\Http\Controllers\UpdateManagerController;
 use App\Http\Controllers\ViewInspectorController;
+use App\Http\Controllers\MembershipEditController;
 use App\Http\Controllers\OrganisationSetController;
 use App\Http\Controllers\MembershipRenewalController;
+use App\Http\Controllers\VerifyContactEmailController;
 use App\Http\Controllers\OrganisationProfileController;
 use App\Http\Controllers\OrganisationSelectorController;
 
@@ -31,6 +35,12 @@ use App\Http\Controllers\OrganisationSelectorController;
 
 Route::get('/view-inspector', [ViewInspectorController::class, 'index']);
 
+/**
+ * Public routes
+ * Can be viewed by any user
+ */
+
+ /** Privacy statement */
 Route::get('privacy',function(){
     return view('privacy');
 });
@@ -79,6 +89,10 @@ Route::get('logout',function(){
     auth()->logout();
     return redirect('/');
 });
+
+
+// http://localhost:8000/membership-edit/dkurwXegXyig
+Route::get('membership-edit/{membershipIdHash}',[MembershipEditController::class,'index']);
 
 Route::get('renew/{membershipIdHash?}', [MembershipRenewalController::class,'index'])->name('membership-renewal');
 Route::post('renewal-payment-completed/{membershipIdHash?}',[MembershipRenewalController::class,'recordPayment'])->name('payment-complete');
@@ -199,29 +213,7 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
         Route::get('uploadfile', [MembersImportController::class, 'index']);
         Route::post('uploadfile', [MembersImportController::class, 'import']);
 
-        /**
-         * Experimental code for processing organisation membership renewal notices
-         */
-        Route::get('renewals',function() {
-            $m = selectedOrganisation()->memberships->first();
-            $primaryContact = $m->members->where('pivot.is_primary_contact',true)->first();
-
-            $details = [
-                'email'=> $primaryContact->email,
-                'membership_id_hash' => app('hasher')->encode([$m->id, time(),24]),
-                'organisation_name'=>"Neerim and District Landcare Group",
-                'primary_contact' => $primaryContact->name,
-                'membership_name'=>$m->name,
-                'subscription_period_end_date' =>  $m->membershipType->currentSubscriptionPeriod()->end_date->addDay(-1)->format('d-m-Y'),
-                'subscription_period_start_date' =>  $m->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y'),
-                ];
-
-
-            return new App\Mail\MembershipRenewal($details);
-
-           //dispatch(new SendMembershipRenewalEmail($details));
-
-        });
+        
 
        
     });
@@ -253,6 +245,71 @@ Route::middleware(['auth:contact,web', 'verified'])->group(function () {
 
 
 // });
+
+/**
+         * Experimental code for processing organisation membership renewal notices
+         */
+        Route::get('verifyemail',function() {
+            $m = selectedOrganisation()->memberships->first();
+            $primaryContact = $m->members->where('pivot.is_primary_contact',true)->first();
+
+            $details = [
+                'email'=> $primaryContact->email,
+                'membership_id_hash' => app('hasher')->encode([$m->id, time(),24]),
+                'organisation_name'=>"Neerim and District Landcare Group",
+                'primary_contact' => $primaryContact->name,
+                'membership_name'=>$m->name,
+                'subscription_period_end_date' =>  $m->membershipType->currentSubscriptionPeriod()->end_date->addDay(-1)->format('d-m-Y'),
+                'subscription_period_start_date' =>  $m->membershipType->currentSubscriptionPeriod()->start_date->format('d-m-Y'),
+                ];
+
+            // return new App\Mail\MembershipRenewal($details);
+
+           //dispatch(new SendMembershipRenewalEmail($details));
+
+        });
+
+        Route::get('verifyemail',function() {
+
+            $encrypted = Crypt::encrypt('secret');
+            
+            $contact = Contact::find(53);
+
+
+            echo $contact->email.'<br>';
+            $checksum = crc32(strtoupper($contact->email));
+            echo $checksum.'<br>';
+
+            $hashId = app('hasher')->encode([$contact->id,$checksum]);
+            echo $hashId.'<br>';
+
+            dd(app('hasher')->decode($hashId));
+            exit;
+            $encrypted = Crypt::encrypt($contact->email);
+            echo '<br>'.$encrypted.'<br>';
+            echo Crypt::decrypt($encrypted); 
+            echo '<br>'.strlen($encrypted);exit;
+
+
+            $contact->email_verification_token = Str::random(24);
+            $contact->email_verified_at = null;
+            $contact->save();
+
+            $details = [
+                'organisation_name'=>'NDLG',
+                'token'=> $contact->email_verification_token,
+                'email'=>$contact->email,
+                
+                ];
+
+                return new App\Mail\EmailVerificationMessage($details);
+            
+
+           //dispatch(new SendMembershipRenewalEmail($details));
+
+        });
+
+        Route::get('verify-email-address/{token}', [VerifyContactEmailController::class, 'verify'])->name('verify-contact-email');
 
 
 

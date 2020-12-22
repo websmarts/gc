@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Rules\inputdate;
 use App\Models\Membership;
+use App\Models\Transaction;
 use App\Models\Organisation;
 use Illuminate\Support\Carbon;
 use App\Events\MembershipDeleted;
@@ -26,6 +27,7 @@ class MembersRegister extends Component
     public $editing; // Membership Model
     public $proxy_start_date; // temp holder for editing.start_date
     // public $proxy_last_paid_date; // temp holder for editing.start_date
+    public $transaction; // instance of App\Models\Transaction
 
 
 
@@ -34,8 +36,6 @@ class MembersRegister extends Component
 
     public $showRenewButton = false;
     public $showSelectAll = 0;
-
-
 
     public function rules()
     {
@@ -46,6 +46,10 @@ class MembersRegister extends Component
             // 'proxy_last_paid_date' => ['nullable', new inputdate],
             'editing.status' => 'required',
             'editing.last_paid_amount' => 'sometimes',
+            'transaction.gross_amount_paid' =>'sometimes',
+            //'transaction.when_received'=> 'sometimes',
+            'transaction.note'=> 'sometimes'
+
         ];
     }
 
@@ -79,6 +83,8 @@ class MembersRegister extends Component
             return $value;
         })->count();
     }
+
+    
 
 
 
@@ -141,7 +147,8 @@ class MembersRegister extends Component
                 ]);
 
                 $details = [
-                    'email' => $primaryContact->verifiedEmailAddress(),
+                    //'email' => $primaryContact->verifiedEmailAddress(),
+                    'email' =>auth()->user()->email,
                     'membership_id_hash' => app('hasher')->encode([$m->id, time(), 24]), // id,now time, hours to expiry
                     'organisation_name' => selectedOrganisation()->name,
                     'primary_contact' => $primaryContact->name,
@@ -160,9 +167,13 @@ class MembersRegister extends Component
     {
         $this->editing = $membership;
 
+        $this->transaction = Transaction::make();
+
         $this->proxy_start_date = optional($this->editing->start_date)->format('d-m-Y');
         $this->showEditMembershipModal = true;
     }
+
+    
 
     /**
      * Save Membership
@@ -171,8 +182,29 @@ class MembersRegister extends Component
     {
         $this->validate();
 
+        
+
         $this->editing->start_date = new Carbon($this->proxy_start_date); // proxy date must be in dd-mm-yyyy NOT dd/mm/yyyyformat
         $this->editing->save();
+
+        //check if a payment was added
+        if((float) $this->transaction->gross_amount_paid != 0){
+            
+            $this->transaction->gross_amount_charged =  $this->editing->membershipType->membershipFeeAsDollars;
+            $this->transaction->membership_id = $this->editing->id;
+            $this->transaction->organisation_id = selectedOrganisation()->id;
+            $this->transaction->type = 'payment';
+            $this->transaction->regarding = 'Membership renewal';
+            $this->transaction->when_received= Carbon::now(); // Just use when entered as when_received date
+
+            $this->transaction->save();
+            
+        }
+        
+        $this->transaction = Transaction::make();
+
+
+
         $this->showEditMembershipModal = false;
         Cache::forget('organisation' . $this->organisationId);
     }

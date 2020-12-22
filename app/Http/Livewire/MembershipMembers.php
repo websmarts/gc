@@ -2,17 +2,20 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\NewEmailAddressRecorded;
 use App\Models\State;
 use App\Models\Address;
 use Livewire\Component;
 use App\Models\Membership;
 use Illuminate\Support\Str;
+use App\Models\Organisation;
 use App\Models\Contact as Member;
 use Illuminate\Support\Facades\Validator;
 
 class MembershipMembers extends Component
 {
     public $membershipId;
+    public $organisationId;
 
     public $membershipTypes;
 
@@ -84,6 +87,11 @@ class MembershipMembers extends Component
 
     public function mount(){
         $this->states = State::get();
+        $this->membership = Membership::find($this->membershipId);
+
+        $this->organisationId = $this->membership->membershipType->organisation_id;
+        $this->membershipTypes = Organisation::find($this->organisationId)->membershipTypes;
+        
     }
 
     
@@ -135,8 +143,27 @@ class MembershipMembers extends Component
             // We are adding a new contact/member
 
             // Set the organisation 
-            $this->editing->organisation_id = selectedOrganisation()->id;
+            $this->editing->organisation_id = $this->organisationId;
             $this->editing->uuid = Str::uuid();
+           
+
+            if(!empty($this->editing->email)){
+
+                if(!auth()->check()){
+                    // must be user updating their own data
+                    // using a sso code
+
+                    // send a verify email adddress email to the changed address
+                    $this->editing->email_verification_token = Str::random(24);
+                    $this->editing->email_verified_at = null;
+                    event(new NewEmailAddressRecorded($this->editing));
+
+                } else {
+                    // it is a trusted manager adding the email address so overide verify process
+                    $this->editing->email_verified_at = $this->editing->freshTimestamp();
+                }
+                
+            }
             $this->editing->save();
 
             $this->membership->members()->attach($this->editing->id, ['is_primary_contact' => $this->is_primary_contact]);
@@ -165,11 +192,28 @@ class MembershipMembers extends Component
                 $this->editing->address_id = $this->address->id;
             }
 
+            if($this->editing->isDirty('email')){
+                // email has been updated so send email address verification email
+                if(!auth()->check()){
+                    // must be user updating their own data
+                    // using a sso code
+
+                    // send a verify email adddress email to the changed address
+                    $this->editing->email_verification_token = Str::random(24);
+                    $this->editing->email_verified_at = null;
+                    event(new NewEmailAddressRecorded($this->editing));
+
+                } else {
+                    // it is a trusted manager adding the email address so overide verify process
+                    $this->editing->email_verified_at = $this->editing->freshTimestamp();
+                }
+
+            }
             $this->editing->save();
             $member = $this->membership->members->where('uuid', $this->editing->uuid)->first();
             $otherMemberIds = $this->membership->members->where('id','!=',$member->id)->pluck('id')->all();
             
-            // primary_contact status may have changed - update pivit if it has
+            // primary_contact status may have changed - update pivot if it has
             if ($member->pivot->is_primary_contact != $this->is_primary_contact) {
                 $this->membership->members()->updateExistingPivot($this->editing->id, ['is_primary_contact' => $this->is_primary_contact]);
             }
@@ -194,11 +238,9 @@ class MembershipMembers extends Component
 
     public function render()
     {
-
-        $this->membershipTypes = selectedOrganisation()->membershipTypes;
-
-        $this->membership = Membership::with('members')->find($this->membershipId);
-
+        // refresh membership members
+        $this->membership->load('members');
+        
         return view('livewire.membership-members');
     }
 }

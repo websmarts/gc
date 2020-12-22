@@ -20,12 +20,13 @@ class CreateContactsTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('address_id')->nullable();  
             $table->string('phone')->nullable();
-            $table->string('email')->nullable();
-            $table->text('notes')->nullable();
 
+            $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('email_verification_token')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
+            $table->text('notes')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

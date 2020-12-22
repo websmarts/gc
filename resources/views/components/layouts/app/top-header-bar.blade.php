@@ -42,9 +42,6 @@
                 <!-- Profile dropdown panel, show/hide based on dropdown state. -->
                 <div @click.away="showProfileDropdown = false" x-show="showProfileDropdown" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                     <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150" role="menuitem">Your Profile</a>
-
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150" role="menuitem">Settings</a>
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

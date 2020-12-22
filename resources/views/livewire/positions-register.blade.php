@@ -14,7 +14,7 @@
         <div class="relative">
 
             <x-input.group for="search" label="Position filled by:" :error="$errors->first('search')">
-                <div x-data x-show="$wire.role_id < 1" class="text-red-800">Select position first</div>
+                <div x-data x-show="$wire.role_id < 1" class="text-red-800">Select position first and then search and select the person to fill it</div>
                 <x-input.text   id="search" placeholder="Search for person to fill position ..." wire:model.debounce.250ms='search'></x-input.text>
                 
 
