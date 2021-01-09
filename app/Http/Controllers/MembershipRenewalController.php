@@ -57,6 +57,8 @@ class MembershipRenewalController extends Controller
 
         $hasher = app('hasher')->decode($membershipIdHash);
         $membership = Membership::findOrFail($hasher[0]);
+        $membership->last_payment_method = 'online';
+        $membership->save();
 
         $details = request()->details;
 
@@ -89,7 +91,7 @@ class MembershipRenewalController extends Controller
     {
         $membership = Membership::with('members', 'members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
 
-        return view('membership.renewal-confirmed', compact('membership'));
+        return view('membership.renewal-confirmed', compact('membership','membershipIdHash'));
     }
 
     /**
@@ -100,7 +102,7 @@ class MembershipRenewalController extends Controller
         // record they selected offline
         $membership = Membership::with('members', 'members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
 
-        $membership->note = 'Selected pay offline renewal option ' . Carbon::now()->format('d-m-Y') . "\r\n" . $membership->note;
+        $membership->last_payment_method = 'offline';
         $membership->save();
 
         return view('membership.renew-offline-details', compact('membership', 'membershipIdHash'));

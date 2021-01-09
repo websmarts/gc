@@ -46,6 +46,7 @@ class MembersRegister extends Component
             // 'proxy_last_paid_date' => ['nullable', new inputdate],
             'editing.status' => 'required',
             'editing.last_paid_amount' => 'sometimes',
+            'editing.note' => 'sometimes',
             'transaction.gross_amount_paid' =>'sometimes',
             //'transaction.when_received'=> 'sometimes',
             'transaction.note'=> 'sometimes'

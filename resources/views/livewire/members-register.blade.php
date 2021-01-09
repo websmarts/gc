@@ -91,6 +91,9 @@
                     @if($membership->latestRenewalPaymentDate )
                     {{ $membership->latestRenewalPaymentDate->tz('Australia/Melbourne')->format('d-m-Y') }}
                     @endif
+                    @if($membership->last_payment_method)
+                        {{ $membership->last_payment_method }}
+                    @endif
 
                 </x-table.cell>
                 <x-table.cell>
@@ -159,14 +162,17 @@
                 <x-input.group for="start_date" label="Start date" :error="$errors->first('proxy_start_date')">
                     <x-input.text id="start_date" wire:model.defer='proxy_start_date'></x-input.text>
                 </x-input.group>
+                <x-input.group for="note" label="Membership note" :error="$errors->first('editing.note')">
+                    <x-input.text id="note" wire:model='editing.note'></x-input.text>
+                </x-input.group>
 
                 <p>Add a renewal payment</p>
-                <x-input.group for="gross_amount_paid" label="Amount paid" :error="$errors->first('proxy_gross_amount_paid')">
+                <x-input.group for="gross_amount_paid" label="Amount paid" :error="$errors->first('transaction.gross_amount_paid')">
                     <x-input.text id="gross_amount_paid" wire:model='transaction.gross_amount_paid'></x-input.text>
                 </x-input.group>
 
 
-                <x-input.group for="note" label="Note" :error="$errors->first('proxy_note')">
+                <x-input.group for="note" label="Payment note" :error="$errors->first('transaction.note')">
                     <x-input.text id="note" wire:model='transaction.note'></x-input.text>
                 </x-input.group>
 

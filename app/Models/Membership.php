@@ -24,6 +24,7 @@ class Membership extends Model
         'membership_type_id',
         'start_date',
         'status',
+        'last_payment_method',
         'note'
     ];
 

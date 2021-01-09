@@ -16,6 +16,6 @@ class MembershipEditController extends Controller
 
         $membership = Membership::with('members','members.address')->findOrFail(app()->hasher->decode($membershipIdHash)[0]);
 
-        return view('membership.members', compact('membership'));
+        return view('membership.update', compact('membership'));
     }
 }

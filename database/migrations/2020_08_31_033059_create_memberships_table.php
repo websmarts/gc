@@ -22,6 +22,7 @@ class CreateMembershipsTable extends Migration
             $table->dateTime('last_paid_date')->nullable();
             $table->integer('last_paid_amount')->nullable();
             $table->string('status')->nullable();
+            $table->string('last_payment_method')->nullable();
             $table->mediumText('note')->nullable();
             $table->softDeletes();
             $table->timestamps();

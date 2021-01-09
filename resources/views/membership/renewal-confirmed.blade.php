@@ -3,7 +3,7 @@
 {{-- dump($membership) --}}
 <p class="text-2xl font-bold">Your membership has been renewed for another year</p>
 
-<p class="mb-4 mt-2">Please review the your current membership details below and let us know if any changes are required</p>
+<p class="mb-4 mt-2">Please review the your current membership details below. <x-link.text  to="{{ route('update-my-membership-details',['membershipIdHash'=>$membershipIdHash]) }}">Click here to update your membership details</x-link.text></p>
 
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
   <div class="px-4 py-5 sm:px-6">

@@ -32,13 +32,13 @@
                                                             <tr>
                                                                 <td style="width:20px">&nbsp;</td>
                                                                 <td>
-                                                                    <p>Your email address has been registered with Groupcare and needs to be verified before it can be used</p>
+                                                                    <p>Your email address ({{$details['email']}}) has been registered with Groupcare and needs to be verified before it can be used</p>
                                                                     
 
                                                                     <p style="line-height:2em; text-align: center"> <a style="font-size:110%" href="{{ route('verify-contact-email',['token'=>$details['token']]) }}">Click on this link  to verify your email address now</a>
                                                                     </p>
 
-                                                                    <p>Note: If you do not wish to verify your email for use on Groupcare then just ignore this email and the resgistration will be discarded witout being activated   </p>
+                                                                    <p>Note: If you do not wish to verify your email for use on Groupcare then just ignore this email and the registration will be discarded without being activated   </p>
 
 
 

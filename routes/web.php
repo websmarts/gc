@@ -92,14 +92,14 @@ Route::get('logout',function(){
 
 
 // http://localhost:8000/membership-edit/dkurwXegXyig
-Route::get('membership-edit/{membershipIdHash}',[MembershipEditController::class,'index']);
+Route::get('membership-edit/{membershipIdHash}',[MembershipEditController::class,'index'])->name('update-my-membership-details');
 
 Route::get('renew/{membershipIdHash?}', [MembershipRenewalController::class,'index'])->name('membership-renewal');
 Route::post('renewal-payment-completed/{membershipIdHash?}',[MembershipRenewalController::class,'recordPayment'])->name('payment-complete');
 
-Route::get('confirm-renewal-payment',function(){
-    return view('membership.confirm-renewal-payment');
-})->name('confirm-renewal-payment');
+// Route::get('confirm-renewal-payment',function(){
+//     return view('membership.confirm-renewal-payment');
+// })->name('confirm-renewal-payment');
 
 
 Route::get('cancel-membership/{membershipIdHash}',function($membershipIdHash){

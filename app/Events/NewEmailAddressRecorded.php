@@ -24,7 +24,7 @@ class NewEmailAddressRecorded
     public function __construct($model)
     {
         $this->model = $model;
-        dd($this->model);
+        //dd($this->model);
     }
 
     /**

@@ -1,0 +1,1 @@
+<p class="bg-indigo-700 opacity-25">bg-indigo-700 opacity-25</p>

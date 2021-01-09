@@ -49,7 +49,7 @@
 
     </div>
 
-    <p class="mb-4 mt-6">Please review the your current membership details below and contact us if any changes are required</p>
+    <p class="mb-4 mt-6">Please review the your current membership details below. &nbsp; <x-link.text to="{{ route('update-my-membership-details',['membershipIdHash'=>$membershipIdHash]) }}">Click here to update your membership details</x-link.text></p>
 
     <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
         <div class="px-4 py-5 sm:px-6">
