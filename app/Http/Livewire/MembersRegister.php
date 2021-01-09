@@ -148,8 +148,8 @@ class MembersRegister extends Component
                 ]);
 
                 $details = [
-                    //'email' => $primaryContact->verifiedEmailAddress(),
-                    'email' =>auth()->user()->email,
+                    'email' => $primaryContact->verifiedEmailAddress(),
+                    //'email' =>auth()->user()->email,
                     'membership_id_hash' => app('hasher')->encode([$m->id, time(), 24]), // id,now time, hours to expiry
                     'organisation_name' => selectedOrganisation()->name,
                     'primary_contact' => $primaryContact->name,
